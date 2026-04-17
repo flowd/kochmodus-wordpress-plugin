@@ -1,0 +1,24 @@
+.kochmodus-button-preview {
+    padding: 16px;
+    text-align: center;
+
+    .kochmodus-preview-btn {
+        background-color: #3d7a5f;
+        color: #fff;
+        border: none;
+        border-radius: 14px;
+        padding: 0.9rem 1.7rem;
+        font-size: 1rem;
+        font-weight: 600;
+        font-family: system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+        cursor: default;
+        box-shadow: 0 3px 10px rgba(0, 0, 0, 0.25);
+    }
+
+    .kochmodus-preview-uri {
+        display: block;
+        margin-top: 8px;
+        opacity: 0.6;
+        font-size: 0.85em;
+    }
+}

@@ -1,0 +1,40 @@
+{
+    "$schema": "https://schemas.wp.org/trunk/block.json",
+    "apiVersion": 3,
+    "name": "kochmodus/button",
+    "version": "1.0.0",
+    "title": "Kochmodus Button",
+    "category": "embed",
+    "icon": "food",
+    "description": "Embeds a Kochmodus cooking mode button.",
+    "keywords": ["kochmodus", "recipe", "cooking", "rezept"],
+    "supports": {
+        "html": false,
+        "multiple": true
+    },
+    "attributes": {
+        "label": {
+            "type": "string",
+            "default": "Kochmodus starten"
+        },
+        "recipeUri": {
+            "type": "string",
+            "default": ""
+        },
+        "backgroundColor": {
+            "type": "string",
+            "default": ""
+        },
+        "hoverBackgroundColor": {
+            "type": "string",
+            "default": ""
+        },
+        "color": {
+            "type": "string",
+            "default": ""
+        }
+    },
+    "textdomain": "kochmodus",
+    "editorScript": "file:./build/index.js",
+    "editorStyle": "file:./build/index.css"
+}

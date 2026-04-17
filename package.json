@@ -1,0 +1,13 @@
+{
+    "name": "kochmodus-wordpress-plugin",
+    "version": "1.0.0",
+    "private": true,
+    "description": "Kochmodus WordPress plugin Gutenberg blocks",
+    "scripts": {
+        "build": "wp-scripts build --webpack-src-dir=blocks/kochmodus-button/src --output-path=blocks/kochmodus-button/build",
+        "start": "wp-scripts start --webpack-src-dir=blocks/kochmodus-button/src --output-path=blocks/kochmodus-button/build"
+    },
+    "devDependencies": {
+        "@wordpress/scripts": "^27.0.0"
+    }
+}
