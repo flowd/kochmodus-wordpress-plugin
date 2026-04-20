@@ -1,0 +1,27 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  cs-fixer:
+    uses: ./.github/workflows/cs-fixer.yml
+
+  phpstan:
+    needs: cs-fixer
+    uses: ./.github/workflows/phpstan.yml
+
+  tests:
+    needs: phpstan
+    uses: ./.github/workflows/tests.yml
+
+  coverage:
+    needs: phpstan
+    uses: ./.github/workflows/coverage.yml
