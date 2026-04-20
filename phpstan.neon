@@ -6,6 +6,6 @@ parameters:
     paths:
         - src
     excludePaths:
-        - vendor
-        - node_modules
-        - tests
+        - vendor (?)
+        - node_modules (?)
+        - tests (?)

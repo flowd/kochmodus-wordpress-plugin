@@ -21,9 +21,11 @@ final class WordPressSettingsRepository implements SettingsRepositoryInterface
             return null;
         }
 
+        $accessToken = $data['access_token'] ?? '';
+
         try {
             return new PluginSettings(
-                new AccessToken($data['access_token'] ?? '')
+                new AccessToken(is_string($accessToken) ? $accessToken : '')
             );
         } catch (InvalidArgumentException $e) {
             return null;

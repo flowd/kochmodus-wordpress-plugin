@@ -80,7 +80,8 @@ final class SettingsPageRenderer
             return $this->getCurrentOptionOrDefault();
         }
 
-        $accessToken = sanitize_text_field($input['access_token'] ?? '');
+        $rawToken = $input['access_token'] ?? '';
+        $accessToken = sanitize_text_field(is_string($rawToken) ? $rawToken : '');
 
         try {
             new AccessToken($accessToken);
@@ -98,6 +99,16 @@ final class SettingsPageRenderer
     private function getCurrentOptionOrDefault(): array
     {
         $current = get_option('kochmodus_settings', null);
-        return is_array($current) ? $current : [];
+        if (!is_array($current)) {
+            return [];
+        }
+
+        $result = [];
+        foreach ($current as $key => $value) {
+            if (is_string($key) && is_string($value)) {
+                $result[$key] = $value;
+            }
+        }
+        return $result;
     }
 }
