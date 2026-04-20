@@ -9,10 +9,28 @@ WordPress plugin to embed the [Kochmodus](https://kochmodus.de) cooking mode wid
 
 ## Installation
 
-1. Download or clone this repository into your `wp-content/plugins/` directory
-2. Run `composer install` (production dependencies only: `composer install --no-dev`)
-3. Build the Gutenberg block: `npm install && npm run build`
-4. Activate the plugin in the WordPress admin under **Plugins**
+### Option 1: Install via Composer
+
+For WordPress projects managed with Composer, require the plugin:
+
+```bash
+composer require flowd/kochmodus-wordpress-plugin
+```
+
+Then activate the plugin in the WordPress admin under **Plugins**.
+
+### Option 2: Upload ZIP via WordPress Admin
+
+1. Download the latest `kochmodus.zip` from the [GitHub Releases](https://github.com/flowdgmbh/kochmodus-wordpress-plugin/releases) page (attached as a release artifact)
+2. In the WordPress admin, go to **Plugins > Add New > Upload Plugin**
+3. Select the ZIP file and click **Install Now**
+4. Activate the plugin
+
+### Option 3: WordPress Plugin Directory
+
+1. In the WordPress admin, go to **Plugins > Add New**
+2. Search for **Kochmodus**
+3. Click **Install Now**, then **Activate**
 
 ## Configuration
 
