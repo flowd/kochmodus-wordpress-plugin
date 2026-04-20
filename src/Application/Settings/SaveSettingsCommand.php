@@ -6,8 +6,7 @@ namespace Kochmodus\Application\Settings;
 
 final class SaveSettingsCommand
 {
-    /** @var string */
-    private $accessToken;
+    private string $accessToken;
 
     public function __construct(string $accessToken)
     {

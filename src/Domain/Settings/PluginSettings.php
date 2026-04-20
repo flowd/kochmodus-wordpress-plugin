@@ -6,8 +6,7 @@ namespace Kochmodus\Domain\Settings;
 
 final class PluginSettings
 {
-    /** @var AccessToken */
-    private $accessToken;
+    private \Kochmodus\Domain\Settings\AccessToken $accessToken;
 
     public function __construct(AccessToken $accessToken)
     {

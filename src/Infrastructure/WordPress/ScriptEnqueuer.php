@@ -8,8 +8,7 @@ final class ScriptEnqueuer implements ScriptEnqueuerInterface
 {
     private const DEFAULT_WIDGET_SCRIPT_URL = 'https://kochmodus.de/build/assets/kochmodus-widget.js';
 
-    /** @var bool */
-    private $needed = false;
+    private bool $needed = false;
 
     public function markNeeded(): void
     {

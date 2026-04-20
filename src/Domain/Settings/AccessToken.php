@@ -10,8 +10,7 @@ final class AccessToken
 {
     private const MAX_LENGTH = 255;
 
-    /** @var string */
-    private $value;
+    private string $value;
 
     public function __construct(string $value)
     {

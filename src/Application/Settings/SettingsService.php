@@ -10,8 +10,7 @@ use Kochmodus\Domain\Settings\SettingsRepositoryInterface;
 
 final class SettingsService implements SettingsServiceInterface
 {
-    /** @var SettingsRepositoryInterface */
-    private $repository;
+    private \Kochmodus\Domain\Settings\SettingsRepositoryInterface $repository;
 
     public function __construct(SettingsRepositoryInterface $repository)
     {

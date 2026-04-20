@@ -6,8 +6,7 @@ namespace Kochmodus\Infrastructure\WordPress;
 
 final class AdminMenuRegistrar
 {
-    /** @var SettingsPageRenderer */
-    private $renderer;
+    private \Kochmodus\Infrastructure\WordPress\SettingsPageRenderer $renderer;
 
     public function __construct(SettingsPageRenderer $renderer)
     {

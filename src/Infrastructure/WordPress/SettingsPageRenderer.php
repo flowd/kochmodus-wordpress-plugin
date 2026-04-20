@@ -10,8 +10,7 @@ use Kochmodus\Domain\Settings\AccessToken;
 
 final class SettingsPageRenderer
 {
-    /** @var SettingsServiceInterface */
-    private $settingsService;
+    private \Kochmodus\Application\Settings\SettingsServiceInterface $settingsService;
 
     public function __construct(SettingsServiceInterface $settingsService)
     {

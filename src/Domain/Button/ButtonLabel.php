@@ -8,8 +8,7 @@ final class ButtonLabel
 {
     public const DEFAULT = 'Kochmodus starten';
 
-    /** @var string */
-    private $value;
+    private string $value;
 
     public function __construct(string $value = self::DEFAULT)
     {

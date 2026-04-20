@@ -7,3 +7,4 @@ blocks/kochmodus-button/build/
 /coverage/
 .php-cs-fixer.cache
 .pnpm-store
+.rector-cache/

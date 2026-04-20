@@ -8,8 +8,7 @@ use InvalidArgumentException;
 
 final class RecipeUri
 {
-    /** @var string */
-    private $value;
+    private string $value;
 
     private const ALLOWED_SCHEMES = ['http', 'https'];
 

@@ -8,8 +8,7 @@ use Kochmodus\Infrastructure\DependencyInjection\Container;
 
 final class Plugin
 {
-    /** @var Container */
-    private $container;
+    private \Kochmodus\Infrastructure\DependencyInjection\Container $container;
 
     public function __construct(Container $container)
     {

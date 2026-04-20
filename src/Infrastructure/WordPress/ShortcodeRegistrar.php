@@ -10,14 +10,11 @@ use Kochmodus\Domain\Button\ButtonLabel;
 
 final class ShortcodeRegistrar
 {
-    /** @var SettingsServiceInterface */
-    private $settingsService;
+    private \Kochmodus\Application\Settings\SettingsServiceInterface $settingsService;
 
-    /** @var RenderButtonServiceInterface */
-    private $renderService;
+    private \Kochmodus\Application\Button\RenderButtonServiceInterface $renderService;
 
-    /** @var ScriptEnqueuerInterface */
-    private $scriptEnqueuer;
+    private \Kochmodus\Infrastructure\WordPress\ScriptEnqueuerInterface $scriptEnqueuer;
 
     public function __construct(
         SettingsServiceInterface $settingsService,

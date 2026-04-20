@@ -9,10 +9,10 @@ use RuntimeException;
 final class Container
 {
     /** @var array<string, callable> */
-    private $factories = [];
+    private array $factories = [];
 
     /** @var array<string, object> */
-    private $instances = [];
+    private array $instances = [];
 
     public function set(string $id, callable $factory): void
     {
