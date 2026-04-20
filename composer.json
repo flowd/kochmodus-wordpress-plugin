@@ -31,7 +31,7 @@
         "test:coverage": [
             "@putenv XDEBUG_MODE=coverage",
             "phpunit --coverage-clover=coverage.xml --coverage-html=coverage/html --coverage-text",
-            "coverage-check coverage.xml 75"
+            "coverage-check coverage.xml 78"
         ],
         "analyse": "phpstan analyse",
         "cs": "php-cs-fixer fix --diff --dry-run",
