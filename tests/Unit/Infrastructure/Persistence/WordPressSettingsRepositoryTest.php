@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Kochmodus\Tests\Unit\Infrastructure\Persistence;
 
 use function Brain\Monkey\Functions\expect;
-use Brain\Monkey\Functions;
 use Kochmodus\Domain\Settings\AccessToken;
 use Kochmodus\Domain\Settings\PluginSettings;
 use Kochmodus\Infrastructure\Persistence\WordPressSettingsRepository;

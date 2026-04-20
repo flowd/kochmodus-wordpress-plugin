@@ -5,7 +5,6 @@ declare(strict_types = 1);
 namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
 
 use function Brain\Monkey\Functions\expect;
-use Brain\Monkey\Functions;
 use Kochmodus\Infrastructure\WordPress\ScriptEnqueuer;
 use Kochmodus\Tests\Unit\Infrastructure\WordPressTestCase;
 

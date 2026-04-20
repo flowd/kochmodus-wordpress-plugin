@@ -6,7 +6,6 @@ namespace Kochmodus\Tests\Unit\Infrastructure;
 
 use function Brain\Monkey\setUp;
 use function Brain\Monkey\tearDown;
-use Brain\Monkey;
 use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use PHPUnit\Framework\TestCase;
 

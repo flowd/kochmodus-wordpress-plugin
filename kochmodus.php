@@ -16,8 +16,8 @@
 
 declare(strict_types = 1);
 
-use Kochmodus\Infrastructure\WordPress\Plugin;
 use Kochmodus\Infrastructure\DependencyInjection\Container;
+use Kochmodus\Infrastructure\WordPress\Plugin;
 
 if (!defined('ABSPATH')) {
     exit;

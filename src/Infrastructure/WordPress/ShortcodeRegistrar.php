@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Infrastructure\WordPress;
 
-use Kochmodus\Domain\Settings\PluginSettings;
 use Kochmodus\Application\Button\RenderButtonServiceInterface;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
 use Kochmodus\Domain\Button\ButtonLabel;
+use Kochmodus\Domain\Settings\PluginSettings;
 
 final class ShortcodeRegistrar
 {

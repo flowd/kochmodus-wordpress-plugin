@@ -4,10 +4,10 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Infrastructure\WordPress;
 
-use Kochmodus\Domain\Settings\PluginSettings;
 use InvalidArgumentException;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
 use Kochmodus\Domain\Settings\AccessToken;
+use Kochmodus\Domain\Settings\PluginSettings;
 
 final class SettingsPageRenderer
 {
