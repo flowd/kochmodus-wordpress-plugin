@@ -60,9 +60,6 @@ jobs:
           php-version: ${{ matrix.php-version }}
           tools: composer
 
-      - name: Remove dev-only tools that require PHP 8.4
-        run: composer remove --dev --no-update friendsofphp/php-cs-fixer phpstan/phpstan szepeviktor/phpstan-wordpress
-
       - name: Install dependencies
         run: composer update --no-interaction --prefer-dist
 
