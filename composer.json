@@ -28,6 +28,7 @@
         "test": "phpunit",
         "test:unit": "phpunit --testsuite=unit",
         "analyse": "phpstan analyse",
+        "cs": "php-cs-fixer fix --diff --dry-run",
         "cs:fix": "php-cs-fixer fix --diff"
     },
     "config": {
