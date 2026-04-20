@@ -25,19 +25,15 @@ jobs:
           tools: composer
           coverage: none
 
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer packages
+      - name: Cache vendor
+        id: vendor-cache
         uses: actions/cache@v5
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-8.4-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-8.4-
+          path: vendor
+          key: ${{ runner.os }}-vendor-8.4-${{ hashFiles('**/composer.lock') }}
 
       - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist
 
       - name: Run PHP CS Fixer
@@ -58,19 +54,15 @@ jobs:
           tools: composer
           coverage: none
 
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer packages
+      - name: Cache vendor
+        id: vendor-cache
         uses: actions/cache@v5
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-8.4-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-8.4-
+          path: vendor
+          key: ${{ runner.os }}-vendor-8.4-${{ hashFiles('**/composer.lock') }}
 
       - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist
 
       - name: Run PHPStan
@@ -95,19 +87,15 @@ jobs:
           tools: composer
           coverage: none
 
-      - name: Get Composer cache directory
-        id: composer-cache
-        run: echo "dir=$(composer config cache-files-dir)" >> $GITHUB_OUTPUT
-
-      - name: Cache Composer packages
+      - name: Cache vendor
+        id: vendor-cache
         uses: actions/cache@v5
         with:
-          path: ${{ steps.composer-cache.outputs.dir }}
-          key: ${{ runner.os }}-composer-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
-          restore-keys: |
-            ${{ runner.os }}-composer-${{ matrix.php-version }}-
+          path: vendor
+          key: ${{ runner.os }}-vendor-${{ matrix.php-version }}-${{ hashFiles('**/composer.lock') }}
 
       - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
         run: composer install --no-interaction --prefer-dist --ignore-platform-reqs
 
       - name: Run tests
