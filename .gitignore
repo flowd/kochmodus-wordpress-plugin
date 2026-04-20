@@ -3,5 +3,7 @@
 blocks/kochmodus-button/build/
 .phpunit.result.cache
 .phpunit.cache/
+/coverage.xml
+/coverage/
 .php-cs-fixer.cache
 .pnpm-store

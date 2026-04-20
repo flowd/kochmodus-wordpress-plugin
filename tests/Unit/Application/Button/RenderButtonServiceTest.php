@@ -146,6 +146,41 @@ final class RenderButtonServiceTest extends TestCase
         $this->assertStringNotContainsString('style=', $html);
     }
 
+    public function test_render_ignores_invalid_background_color(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $this->settings,
+            'Kochmodus starten',
+            null,
+            'red; position: fixed; background-image: url(https://evil.example)'
+        );
+
+        $this->assertStringNotContainsString('style=', $html);
+        $this->assertStringNotContainsString('position', $html);
+        $this->assertStringNotContainsString('evil.example', $html);
+    }
+
+    public function test_render_drops_invalid_color_but_keeps_valid_ones(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $this->settings,
+            'Kochmodus starten',
+            null,
+            '#ff0000',
+            'injection; url(x)',
+            '#ffffff'
+        );
+
+        $this->assertStringContainsString('--kochmodus-button-background: #ff0000', $html);
+        $this->assertStringContainsString('--kochmodus-button-color: #ffffff', $html);
+        $this->assertStringNotContainsString('--kochmodus-button-hover-background', $html);
+        $this->assertStringNotContainsString('injection', $html);
+    }
+
     public function test_render_omits_style_when_colors_are_empty_strings(): void
     {
         $service = new RenderButtonService();

@@ -72,4 +72,30 @@ final class ScriptEnqueuerTest extends WordPressTestCase
 
         $this->assertStringContainsString('type="module"', $output);
     }
+
+    /**
+     * @runInSeparateProcess
+     * @preserveGlobalState disabled
+     */
+    public function test_maybe_enqueue_uses_widget_script_url_constant_when_defined(): void
+    {
+        define('KOCHMODUS_WIDGET_SCRIPT_URL', 'https://cdn.example.com/widget.js');
+
+        Functions\expect('esc_url')
+            ->once()
+            ->with('https://cdn.example.com/widget.js')
+            ->andReturnFirstArg();
+
+        $enqueuer = new ScriptEnqueuer();
+        $enqueuer->markNeeded();
+
+        ob_start();
+        $enqueuer->maybeEnqueue();
+        $output = ob_get_clean();
+
+        $this->assertSame(
+            '<script type="module" src="https://cdn.example.com/widget.js"></script>' . "\n",
+            $output
+        );
+    }
 }

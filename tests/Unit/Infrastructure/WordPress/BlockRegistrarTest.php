@@ -111,6 +111,44 @@ final class BlockRegistrarTest extends WordPressTestCase
         $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
     }
 
+    public function test_render_block_passes_color_attributes(): void
+    {
+        $settings = $this->createSettings();
+
+        /** @var SettingsServiceInterface&MockInterface $settingsService */
+        $settingsService = Mockery::mock(SettingsServiceInterface::class);
+        $settingsService->shouldReceive('getSettings')->once()->andReturn($settings);
+
+        /** @var RenderButtonServiceInterface&MockInterface $renderService */
+        $renderService = Mockery::mock(RenderButtonServiceInterface::class);
+        $renderService->shouldReceive('render')
+            ->once()
+            ->with(
+                $settings,
+                'Kochmodus starten',
+                null,
+                '#ff0000',
+                '#cc0000',
+                '#ffffff',
+                Mockery::type('callable')
+            )
+            ->andReturn('<kochmodus-button></kochmodus-button>');
+
+        /** @var ScriptEnqueuerInterface&MockInterface $scriptEnqueuer */
+        $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
+        $scriptEnqueuer->shouldReceive('markNeeded')->once();
+
+        $registrar = new BlockRegistrar($settingsService, $renderService, $scriptEnqueuer);
+
+        $result = $registrar->renderBlock([
+            'backgroundColor' => '#ff0000',
+            'hoverBackgroundColor' => '#cc0000',
+            'color' => '#ffffff',
+        ]);
+
+        $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
+    }
+
     private function createRegistrar(
         ?SettingsServiceInterface $settingsService = null,
         ?RenderButtonServiceInterface $renderService = null,

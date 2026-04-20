@@ -119,6 +119,54 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
     }
 
+    public function test_handle_shortcode_passes_color_attributes(): void
+    {
+        $settings = $this->createSettings();
+
+        /** @var SettingsServiceInterface&MockInterface $settingsService */
+        $settingsService = Mockery::mock(SettingsServiceInterface::class);
+        $settingsService->shouldReceive('getSettings')->once()->andReturn($settings);
+
+        /** @var RenderButtonServiceInterface&MockInterface $renderService */
+        $renderService = Mockery::mock(RenderButtonServiceInterface::class);
+        $renderService->shouldReceive('render')
+            ->once()
+            ->with(
+                $settings,
+                'Kochmodus starten',
+                null,
+                '#ff0000',
+                '#cc0000',
+                '#ffffff',
+                Mockery::type('callable')
+            )
+            ->andReturn('<kochmodus-button></kochmodus-button>');
+
+        /** @var ScriptEnqueuerInterface&MockInterface $scriptEnqueuer */
+        $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
+        $scriptEnqueuer->shouldReceive('markNeeded')->once();
+
+        Functions\expect('shortcode_atts')
+            ->once()
+            ->andReturn([
+                'label' => 'Kochmodus starten',
+                'recipe_uri' => '',
+                'background_color' => '#ff0000',
+                'hover_background_color' => '#cc0000',
+                'color' => '#ffffff',
+            ]);
+
+        $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
+
+        $result = $registrar->handleShortcode([
+            'background_color' => '#ff0000',
+            'hover_background_color' => '#cc0000',
+            'color' => '#ffffff',
+        ]);
+
+        $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
+    }
+
     public function test_handle_shortcode_marks_script_as_needed(): void
     {
         $settings = $this->createSettings();

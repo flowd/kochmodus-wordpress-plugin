@@ -38,6 +38,20 @@ final class AccessTokenTest extends TestCase
         new AccessToken('   ');
     }
 
+    public function test_it_accepts_token_at_max_length(): void
+    {
+        $token = new AccessToken(str_repeat('a', 255));
+
+        $this->assertSame(255, strlen($token->value()));
+    }
+
+    public function test_it_throws_on_token_exceeding_max_length(): void
+    {
+        $this->expectException(InvalidArgumentException::class);
+
+        new AccessToken(str_repeat('a', 256));
+    }
+
     public function test_equals_returns_true_for_same_value(): void
     {
         $a = new AccessToken('abc123');

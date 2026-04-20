@@ -4,7 +4,9 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Application\Button;
 
+use InvalidArgumentException;
 use Kochmodus\Domain\Button\ButtonLabel;
+use Kochmodus\Domain\Button\Color;
 use Kochmodus\Domain\Button\RecipeUri;
 use Kochmodus\Domain\Settings\PluginSettings;
 
@@ -52,16 +54,19 @@ final class RenderButtonService implements RenderButtonServiceInterface
     {
         $styles = [];
 
-        if ($backgroundColor !== null && $backgroundColor !== '') {
-            $styles[] = '--kochmodus-button-background: ' . $backgroundColor;
+        $validatedBackground = $this->validateColor($backgroundColor);
+        if ($validatedBackground !== null) {
+            $styles[] = '--kochmodus-button-background: ' . $validatedBackground;
         }
 
-        if ($hoverBackgroundColor !== null && $hoverBackgroundColor !== '') {
-            $styles[] = '--kochmodus-button-hover-background: ' . $hoverBackgroundColor;
+        $validatedHoverBackground = $this->validateColor($hoverBackgroundColor);
+        if ($validatedHoverBackground !== null) {
+            $styles[] = '--kochmodus-button-hover-background: ' . $validatedHoverBackground;
         }
 
-        if ($color !== null && $color !== '') {
-            $styles[] = '--kochmodus-button-color: ' . $color;
+        $validatedColor = $this->validateColor($color);
+        if ($validatedColor !== null) {
+            $styles[] = '--kochmodus-button-color: ' . $validatedColor;
         }
 
         if ($styles === []) {
@@ -69,5 +74,17 @@ final class RenderButtonService implements RenderButtonServiceInterface
         }
 
         return sprintf(' style="%s"', $esc(implode('; ', $styles)));
+    }
+
+    private function validateColor(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        try {
+            return (new Color($value))->value();
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
     }
 }

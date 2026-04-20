@@ -8,6 +8,8 @@ use InvalidArgumentException;
 
 final class AccessToken
 {
+    private const MAX_LENGTH = 255;
+
     /** @var string */
     private $value;
 
@@ -16,6 +18,11 @@ final class AccessToken
         $trimmed = trim($value);
         if ($trimmed === '') {
             throw new InvalidArgumentException('Access token must not be empty.');
+        }
+        if (strlen($trimmed) > self::MAX_LENGTH) {
+            throw new InvalidArgumentException(
+                sprintf('Access token must not exceed %d characters.', self::MAX_LENGTH)
+            );
         }
         $this->value = $trimmed;
     }
