@@ -18,10 +18,14 @@ jobs:
     needs: cs-fixer
     uses: ./.github/workflows/phpstan.yml
 
-  tests:
+  rector:
     needs: phpstan
+    uses: ./.github/workflows/rector.yml
+
+  tests:
+    needs: rector
     uses: ./.github/workflows/tests.yml
 
   coverage:
-    needs: phpstan
+    needs: rector
     uses: ./.github/workflows/coverage.yml

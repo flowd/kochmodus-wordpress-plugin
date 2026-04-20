@@ -12,7 +12,7 @@
         "fsylum/rector-wordpress": "^1.0",
         "mockery/mockery": "^1.6",
         "phpstan/phpstan": "^2.1",
-        "phpunit/phpunit": "^13.1.7",
+        "phpunit/phpunit": "^9.6",
         "rector/rector": "^2.4",
         "rregeer/phpunit-coverage-check": "^0.3.1",
         "szepeviktor/phpstan-wordpress": "^2.0"
