@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 use Kochmodus\Application\Button\RenderButtonServiceInterface;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
@@ -19,7 +20,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
 {
     public function test_register_adds_shortcode(): void
     {
-        Functions\expect('add_shortcode')
+        expect('add_shortcode')
             ->once()
             ->with('kochmodus_button', Mockery::type('array'));
 
@@ -67,7 +68,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
-        Functions\expect('shortcode_atts')
+        expect('shortcode_atts')
             ->once()
             ->andReturn(['label' => 'Kochmodus starten', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
 
@@ -105,7 +106,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
-        Functions\expect('shortcode_atts')
+        expect('shortcode_atts')
             ->once()
             ->andReturn(['label' => 'Jetzt kochen!', 'recipe_uri' => 'https://other.com/rezept/', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
 
@@ -146,7 +147,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
-        Functions\expect('shortcode_atts')
+        expect('shortcode_atts')
             ->once()
             ->andReturn([
                 'label' => 'Kochmodus starten',
@@ -183,7 +184,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
-        Functions\expect('shortcode_atts')
+        expect('shortcode_atts')
             ->andReturn(['label' => 'Kochmodus starten', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);

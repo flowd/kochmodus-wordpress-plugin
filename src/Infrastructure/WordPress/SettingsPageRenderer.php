@@ -4,13 +4,14 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Infrastructure\WordPress;
 
+use Kochmodus\Domain\Settings\PluginSettings;
 use InvalidArgumentException;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
 use Kochmodus\Domain\Settings\AccessToken;
 
 final class SettingsPageRenderer
 {
-    private \Kochmodus\Application\Settings\SettingsServiceInterface $settingsService;
+    private SettingsServiceInterface $settingsService;
 
     public function __construct(SettingsServiceInterface $settingsService)
     {
@@ -58,7 +59,7 @@ final class SettingsPageRenderer
     public function renderAccessTokenField(): void
     {
         $settings = $this->settingsService->getSettings();
-        $value = $settings !== null ? $settings->accessToken()->value() : '';
+        $value = $settings instanceof PluginSettings ? $settings->accessToken()->value() : '';
         printf(
             '<input type="text" id="kochmodus_access_token" name="kochmodus_settings[access_token]" value="%s" class="regular-text" required />',
             esc_attr($value)

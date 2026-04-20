@@ -6,12 +6,11 @@ namespace Kochmodus\Tests\Unit\Domain\Button;
 
 use InvalidArgumentException;
 use Kochmodus\Domain\Button\Color;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class ColorTest extends TestCase
 {
-    #[DataProvider('validColorProvider')]
+    /** @dataProvider validColorProvider */
     public function test_it_accepts_valid_colors(string $input): void
     {
         $color = new Color($input);
@@ -35,7 +34,7 @@ final class ColorTest extends TestCase
         ];
     }
 
-    #[DataProvider('invalidColorProvider')]
+    /** @dataProvider invalidColorProvider */
     public function test_it_rejects_invalid_colors(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);

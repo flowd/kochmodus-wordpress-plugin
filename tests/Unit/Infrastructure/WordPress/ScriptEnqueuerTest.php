@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 use Kochmodus\Infrastructure\WordPress\ScriptEnqueuer;
 use Kochmodus\Tests\Unit\Infrastructure\WordPressTestCase;
@@ -39,7 +40,7 @@ final class ScriptEnqueuerTest extends WordPressTestCase
 
     public function test_maybe_enqueue_outputs_default_script_url_when_needed(): void
     {
-        Functions\expect('esc_url')
+        expect('esc_url')
             ->once()
             ->with('https://kochmodus.de/build/assets/kochmodus-widget.js')
             ->andReturn('https://kochmodus.de/build/assets/kochmodus-widget.js');
@@ -59,7 +60,7 @@ final class ScriptEnqueuerTest extends WordPressTestCase
 
     public function test_maybe_enqueue_outputs_script_tag_with_type_module(): void
     {
-        Functions\expect('esc_url')
+        expect('esc_url')
             ->once()
             ->andReturnFirstArg();
 
@@ -81,7 +82,7 @@ final class ScriptEnqueuerTest extends WordPressTestCase
     {
         define('KOCHMODUS_WIDGET_SCRIPT_URL', 'https://cdn.example.com/widget.js');
 
-        Functions\expect('esc_url')
+        expect('esc_url')
             ->once()
             ->with('https://cdn.example.com/widget.js')
             ->andReturnFirstArg();

@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 use Kochmodus\Application\Button\RenderButtonServiceInterface;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
@@ -19,7 +20,7 @@ final class BlockRegistrarTest extends WordPressTestCase
 {
     public function test_register_calls_register_block_type(): void
     {
-        Functions\expect('register_block_type')
+        expect('register_block_type')
             ->once()
             ->with(Mockery::type('string'), Mockery::type('array'));
 

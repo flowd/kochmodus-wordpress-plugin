@@ -4,17 +4,18 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Infrastructure\WordPress;
 
+use Kochmodus\Domain\Settings\PluginSettings;
 use Kochmodus\Application\Button\RenderButtonServiceInterface;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
 use Kochmodus\Domain\Button\ButtonLabel;
 
 final class ShortcodeRegistrar
 {
-    private \Kochmodus\Application\Settings\SettingsServiceInterface $settingsService;
+    private SettingsServiceInterface $settingsService;
 
-    private \Kochmodus\Application\Button\RenderButtonServiceInterface $renderService;
+    private RenderButtonServiceInterface $renderService;
 
-    private \Kochmodus\Infrastructure\WordPress\ScriptEnqueuerInterface $scriptEnqueuer;
+    private ScriptEnqueuerInterface $scriptEnqueuer;
 
     public function __construct(
         SettingsServiceInterface $settingsService,
@@ -37,7 +38,7 @@ final class ShortcodeRegistrar
     public function handleShortcode($atts): string
     {
         $settings = $this->settingsService->getSettings();
-        if ($settings === null) {
+        if (!$settings instanceof PluginSettings) {
             return '<!-- Kochmodus: Plugin not configured -->';
         }
 

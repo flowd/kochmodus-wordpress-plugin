@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Tests\Unit\Infrastructure\Persistence;
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 use Kochmodus\Domain\Settings\AccessToken;
 use Kochmodus\Domain\Settings\PluginSettings;
@@ -14,7 +15,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 {
     public function test_find_returns_null_when_option_not_set(): void
     {
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturn(null);
@@ -26,7 +27,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 
     public function test_find_returns_plugin_settings_from_option_array(): void
     {
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturn([
@@ -42,7 +43,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 
     public function test_find_returns_null_when_option_data_is_corrupt(): void
     {
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturn([
@@ -56,7 +57,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 
     public function test_find_returns_null_when_option_is_not_array(): void
     {
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturn('invalid');
@@ -68,7 +69,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 
     public function test_save_calls_update_option_with_serialized_data(): void
     {
-        Functions\expect('update_option')
+        expect('update_option')
             ->once()
             ->with('kochmodus_settings', [
                 'access_token' => 'token123',
@@ -84,7 +85,7 @@ final class WordPressSettingsRepositoryTest extends WordPressTestCase
 
     public function test_delete_calls_delete_option(): void
     {
-        Functions\expect('delete_option')
+        expect('delete_option')
             ->once()
             ->with('kochmodus_settings');
 

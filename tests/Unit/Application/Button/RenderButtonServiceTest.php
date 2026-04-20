@@ -11,7 +11,7 @@ use PHPUnit\Framework\TestCase;
 
 final class RenderButtonServiceTest extends TestCase
 {
-    private \Kochmodus\Domain\Settings\PluginSettings $settings;
+    private PluginSettings $settings;
 
     protected function setUp(): void
     {

@@ -6,7 +6,6 @@ namespace Kochmodus\Tests\Unit\Domain\Button;
 
 use InvalidArgumentException;
 use Kochmodus\Domain\Button\RecipeUri;
-use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\TestCase;
 
 final class RecipeUriTest extends TestCase
@@ -46,7 +45,7 @@ final class RecipeUriTest extends TestCase
         $this->assertSame('http://example.com/rezept/', $uri->value());
     }
 
-    #[DataProvider('dangerousSchemeProvider')]
+    /** @dataProvider dangerousSchemeProvider */
     public function test_it_rejects_non_http_schemes(string $input): void
     {
         $this->expectException(InvalidArgumentException::class);

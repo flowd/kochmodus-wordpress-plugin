@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
 
+use function Brain\Monkey\Functions\expect;
 use Brain\Monkey\Functions;
 use Kochmodus\Application\Settings\SettingsServiceInterface;
 use Kochmodus\Infrastructure\WordPress\SettingsPageRenderer;
@@ -15,7 +16,7 @@ final class SettingsPageRendererTest extends WordPressTestCase
 {
     public function test_sanitize_settings_returns_sanitized_array_for_valid_input(): void
     {
-        Functions\expect('sanitize_text_field')
+        expect('sanitize_text_field')
             ->once()
             ->with('  token-abc  ')
             ->andReturn('token-abc');
@@ -29,10 +30,10 @@ final class SettingsPageRendererTest extends WordPressTestCase
 
     public function test_sanitize_settings_returns_existing_option_when_input_is_not_array(): void
     {
-        Functions\expect('add_settings_error')
+        expect('add_settings_error')
             ->once()
             ->with('kochmodus_settings', 'invalid_input', Mockery::type('string'));
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturn(['access_token' => 'previous']);
@@ -46,8 +47,8 @@ final class SettingsPageRendererTest extends WordPressTestCase
 
     public function test_sanitize_settings_returns_empty_array_when_no_existing_option(): void
     {
-        Functions\expect('add_settings_error')->once();
-        Functions\expect('get_option')
+        expect('add_settings_error')->once();
+        expect('get_option')
             ->once()
             ->with('kochmodus_settings', null)
             ->andReturnNull();
@@ -61,16 +62,16 @@ final class SettingsPageRendererTest extends WordPressTestCase
 
     public function test_sanitize_settings_rejects_empty_access_token_with_validation_error(): void
     {
-        Functions\expect('sanitize_text_field')
+        expect('sanitize_text_field')
             ->once()
             ->with('')
             ->andReturn('');
-        Functions\expect('add_settings_error')
+        expect('add_settings_error')
             ->once()
             ->with('kochmodus_settings', 'validation_error', Mockery::on(static function ($message): bool {
                 return is_string($message) && strpos($message, 'Access Token:') === 0;
             }));
-        Functions\expect('get_option')
+        expect('get_option')
             ->once()
             ->andReturn([]);
 
@@ -83,12 +84,12 @@ final class SettingsPageRendererTest extends WordPressTestCase
 
     public function test_sanitize_settings_uses_empty_string_when_access_token_key_missing(): void
     {
-        Functions\expect('sanitize_text_field')
+        expect('sanitize_text_field')
             ->once()
             ->with('')
             ->andReturn('');
-        Functions\expect('add_settings_error')->once();
-        Functions\expect('get_option')->once()->andReturn([]);
+        expect('add_settings_error')->once();
+        expect('get_option')->once()->andReturn([]);
 
         $renderer = new SettingsPageRenderer($this->createSettingsService());
 
