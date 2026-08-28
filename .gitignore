@@ -9,3 +9,9 @@ blocks/kochmodus-button/build/
 .pnpm-store
 .rector-cache/
 .idea/
+.DS_Store
+.vscode
+.project
+.history
+.claude/settings.local.json
+.quellen
