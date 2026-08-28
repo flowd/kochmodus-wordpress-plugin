@@ -1,0 +1,36 @@
+# Directories
+/.git
+/.github
+/.idea
+/.pnpm-store
+/.rector-cache
+/.phpunit.cache
+/node_modules
+/tests
+/coverage
+
+# WordPress.org page assets (deployed to SVN /assets, not trunk)
+/assets
+
+# Block sources (only the build output ships)
+/blocks/kochmodus-button/src
+
+# Files
+/.distignore
+/.editorconfig
+/.gitignore
+/.php-cs-fixer.cache
+/.php-cs-fixer.dist.php
+/.phpunit.result.cache
+/AGENTS.md
+/CLAUDE.md
+/README.md
+/composer.json
+/composer.lock
+/coverage.xml
+/package.json
+/phpstan.neon
+/phpunit.xml.dist
+/pnpm-lock.yaml
+/pnpm-workspace.yaml
+/rector.php
