@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
 final class ScriptEnqueuer implements ScriptEnqueuerInterface
 {
@@ -26,11 +26,10 @@ final class ScriptEnqueuer implements ScriptEnqueuerInterface
             return;
         }
 
-        $url = esc_url($this->getWidgetScriptUrl());
-        echo sprintf(
-            '<script type="module" src="%s"></script>' . "\n",
-            $url
-        );
+        wp_print_script_tag([
+            'type' => 'module',
+            'src' => esc_url($this->getWidgetScriptUrl()),
+        ]);
     }
 
     private function getWidgetScriptUrl(): string

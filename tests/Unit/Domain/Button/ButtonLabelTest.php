@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Domain\Button;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Domain\Button;
 
-use Kochmodus\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
 use PHPUnit\Framework\TestCase;
 
 final class ButtonLabelTest extends TestCase

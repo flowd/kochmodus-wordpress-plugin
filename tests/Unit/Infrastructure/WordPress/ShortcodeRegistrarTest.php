@@ -2,16 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPress;
 
 use function Brain\Monkey\Functions\expect;
-use Kochmodus\Application\Button\RenderButtonServiceInterface;
-use Kochmodus\Application\Settings\SettingsServiceInterface;
-use Kochmodus\Domain\Settings\AccessToken;
-use Kochmodus\Domain\Settings\PluginSettings;
-use Kochmodus\Infrastructure\WordPress\ScriptEnqueuerInterface;
-use Kochmodus\Infrastructure\WordPress\ShortcodeRegistrar;
-use Kochmodus\Tests\Unit\Infrastructure\WordPressTestCase;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ScriptEnqueuerInterface;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ShortcodeRegistrar;
+use Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPressTestCase;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -54,7 +54,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
             ->once()
             ->with(
                 $settings,
-                'Kochmodus starten',
+                null,
                 null,
                 null,
                 null,
@@ -69,7 +69,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
 
         expect('shortcode_atts')
             ->once()
-            ->andReturn(['label' => 'Kochmodus starten', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
+            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
 
@@ -133,7 +133,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
             ->once()
             ->with(
                 $settings,
-                'Kochmodus starten',
+                null,
                 null,
                 '#ff0000',
                 '#cc0000',
@@ -149,7 +149,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         expect('shortcode_atts')
             ->once()
             ->andReturn([
-                'label' => 'Kochmodus starten',
+                'label' => '',
                 'recipe_uri' => '',
                 'background_color' => '#ff0000',
                 'hover_background_color' => '#cc0000',
@@ -184,7 +184,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
         expect('shortcode_atts')
-            ->andReturn(['label' => 'Kochmodus starten', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
+            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
         $registrar->handleShortcode([]);

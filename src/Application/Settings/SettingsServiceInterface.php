@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Application\Settings;
+namespace Flowd\KochmodusWordpressPlugin\Application\Settings;
 
-use Kochmodus\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 interface SettingsServiceInterface
 {

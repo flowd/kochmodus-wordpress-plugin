@@ -19,12 +19,12 @@
     },
     "autoload": {
         "psr-4": {
-            "Kochmodus\\": "src/"
+            "Flowd\\KochmodusWordpressPlugin\\": "src/"
         }
     },
     "autoload-dev": {
         "psr-4": {
-            "Kochmodus\\Tests\\": "tests/"
+            "Flowd\\KochmodusWordpressPlugin\\Tests\\": "tests/"
         }
     },
     "scripts": {

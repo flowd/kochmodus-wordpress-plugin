@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
 interface ScriptEnqueuerInterface
 {

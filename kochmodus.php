@@ -5,7 +5,7 @@
  * Description:       Embeds the Kochmodus cooking mode widget on recipe pages.
  * Version:           1.0.0
  * Requires at least: 6.0
- * Requires PHP:      ^7.4|^8.0
+ * Requires PHP:      7.4
  * Author:            Flowd GmbH
  * Author URI:        https://flowd.de
  * License:           GPL-2.0-or-later
@@ -16,8 +16,8 @@
 
 declare(strict_types = 1);
 
-use Kochmodus\Infrastructure\DependencyInjection\Container;
-use Kochmodus\Infrastructure\WordPress\Plugin;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\DependencyInjection\Container;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\Plugin;
 
 if (!defined('ABSPATH')) {
     exit;

@@ -2,13 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Application\Button;
+namespace Flowd\KochmodusWordpressPlugin\Application\Button;
 
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\RecipeUri;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 use InvalidArgumentException;
-use Kochmodus\Domain\Button\ButtonLabel;
-use Kochmodus\Domain\Button\Color;
-use Kochmodus\Domain\Button\RecipeUri;
-use Kochmodus\Domain\Settings\PluginSettings;
 
 final class RenderButtonService implements RenderButtonServiceInterface
 {
@@ -17,7 +17,7 @@ final class RenderButtonService implements RenderButtonServiceInterface
      */
     public function render(
         PluginSettings $settings,
-        string $label = ButtonLabel::DEFAULT,
+        ?string $label = null,
         ?string $recipeUri = null,
         ?string $backgroundColor = null,
         ?string $hoverBackgroundColor = null,
@@ -28,15 +28,15 @@ final class RenderButtonService implements RenderButtonServiceInterface
             return htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
         };
 
-        $buttonLabel = new ButtonLabel($label);
+        $buttonLabel = $this->resolveLabel($settings, $label);
 
         $recipeUriAttr = '';
-        if ($recipeUri !== null && $recipeUri !== '') {
-            $validatedUri = new RecipeUri($recipeUri);
-            $recipeUriAttr = sprintf(' data-kochmodus-recipe-uri="%s"', $esc($validatedUri->value()));
+        $validatedUri = $this->validateRecipeUri($recipeUri);
+        if ($validatedUri !== null) {
+            $recipeUriAttr = sprintf(' data-kochmodus-recipe-uri="%s"', $esc($validatedUri));
         }
 
-        $styleAttr = $this->buildStyleAttribute($backgroundColor, $hoverBackgroundColor, $color, $esc);
+        $styleAttr = $this->buildStyleAttribute($settings, $backgroundColor, $hoverBackgroundColor, $color, $esc);
 
         return sprintf(
             '<kochmodus-button label="%s"%s%s data-kochmodus-access-token="%s"></kochmodus-button>',
@@ -47,24 +47,40 @@ final class RenderButtonService implements RenderButtonServiceInterface
         );
     }
 
+    private function resolveLabel(PluginSettings $settings, ?string $label): ButtonLabel
+    {
+        if ($label !== null && trim($label) !== '') {
+            return new ButtonLabel($label);
+        }
+
+        if ($settings->defaultLabel() !== null) {
+            return $settings->defaultLabel();
+        }
+
+        return new ButtonLabel();
+    }
+
     /**
      * @param callable(string): string $esc
      */
-    private function buildStyleAttribute(?string $backgroundColor, ?string $hoverBackgroundColor, ?string $color, callable $esc): string
+    private function buildStyleAttribute(PluginSettings $settings, ?string $backgroundColor, ?string $hoverBackgroundColor, ?string $color, callable $esc): string
     {
         $styles = [];
 
-        $validatedBackground = $this->validateColor($backgroundColor);
+        $validatedBackground = $this->validateColor($backgroundColor)
+            ?? ($settings->defaultBackgroundColor() !== null ? $settings->defaultBackgroundColor()->value() : null);
         if ($validatedBackground !== null) {
             $styles[] = '--kochmodus-button-background: ' . $validatedBackground;
         }
 
-        $validatedHoverBackground = $this->validateColor($hoverBackgroundColor);
+        $validatedHoverBackground = $this->validateColor($hoverBackgroundColor)
+            ?? ($settings->defaultHoverBackgroundColor() !== null ? $settings->defaultHoverBackgroundColor()->value() : null);
         if ($validatedHoverBackground !== null) {
             $styles[] = '--kochmodus-button-hover-background: ' . $validatedHoverBackground;
         }
 
-        $validatedColor = $this->validateColor($color);
+        $validatedColor = $this->validateColor($color)
+            ?? ($settings->defaultColor() !== null ? $settings->defaultColor()->value() : null);
         if ($validatedColor !== null) {
             $styles[] = '--kochmodus-button-color: ' . $validatedColor;
         }
@@ -83,6 +99,18 @@ final class RenderButtonService implements RenderButtonServiceInterface
         }
         try {
             return (new Color($value))->value();
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
+    }
+
+    private function validateRecipeUri(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        try {
+            return (new RecipeUri($value))->value();
         } catch (InvalidArgumentException $e) {
             return null;
         }

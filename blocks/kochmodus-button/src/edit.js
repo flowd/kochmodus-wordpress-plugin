@@ -6,6 +6,13 @@ export default function Edit({ attributes, setAttributes }) {
     const { label, recipeUri, backgroundColor, hoverBackgroundColor, color } = attributes;
     const blockProps = useBlockProps();
 
+    // Global defaults from Settings > Kochmodus, injected via wp_add_inline_script.
+    const defaults = window.kochmodusEditorDefaults || {};
+    const effectiveBackgroundColor = backgroundColor || defaults.backgroundColor || '';
+    const effectiveHoverBackgroundColor = hoverBackgroundColor || defaults.hoverBackgroundColor || '';
+    const effectiveColor = color || defaults.color || '';
+    const effectiveLabel = label || defaults.label || __('Kochmodus starten', 'kochmodus');
+
     return (
         <>
             <InspectorControls>
@@ -14,7 +21,7 @@ export default function Edit({ attributes, setAttributes }) {
                         label={__('Button Label', 'kochmodus')}
                         value={label}
                         onChange={(value) => setAttributes({ label: value })}
-                        help={__('Default: "Kochmodus starten"', 'kochmodus')}
+                        help={__('Leave empty to use the default from Settings > Kochmodus.', 'kochmodus')}
                     />
                     <TextControl
                         label={__('Recipe URI (optional)', 'kochmodus')}
@@ -29,7 +36,7 @@ export default function Edit({ attributes, setAttributes }) {
                         id="kochmodus-bg-color"
                     >
                         <ColorPicker
-                            color={backgroundColor || '#3d7a5f'}
+                            color={effectiveBackgroundColor || '#3d7a5f'}
                             onChange={(value) => setAttributes({ backgroundColor: value })}
                             enableAlpha={false}
                         />
@@ -49,7 +56,7 @@ export default function Edit({ attributes, setAttributes }) {
                         id="kochmodus-hover-bg-color"
                     >
                         <ColorPicker
-                            color={hoverBackgroundColor || '#316249'}
+                            color={effectiveHoverBackgroundColor || '#316249'}
                             onChange={(value) => setAttributes({ hoverBackgroundColor: value })}
                             enableAlpha={false}
                         />
@@ -69,7 +76,7 @@ export default function Edit({ attributes, setAttributes }) {
                         id="kochmodus-text-color"
                     >
                         <ColorPicker
-                            color={color || '#ffffff'}
+                            color={effectiveColor || '#ffffff'}
                             onChange={(value) => setAttributes({ color: value })}
                             enableAlpha={false}
                         />
@@ -93,11 +100,11 @@ export default function Edit({ attributes, setAttributes }) {
                         disabled
                         className="kochmodus-preview-btn"
                         style={{
-                            ...(backgroundColor ? { backgroundColor } : {}),
-                            ...(color ? { color } : {}),
+                            ...(effectiveBackgroundColor ? { backgroundColor: effectiveBackgroundColor } : {}),
+                            ...(effectiveColor ? { color: effectiveColor } : {}),
                         }}
                     >
-                        {label || __('Kochmodus starten', 'kochmodus')}
+                        {effectiveLabel}
                     </button>
                     {recipeUri && (
                         <small className="kochmodus-preview-uri">

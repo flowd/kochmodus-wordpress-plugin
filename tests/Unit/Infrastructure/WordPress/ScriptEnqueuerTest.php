@@ -2,11 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPress;
 
 use function Brain\Monkey\Functions\expect;
-use Kochmodus\Infrastructure\WordPress\ScriptEnqueuer;
-use Kochmodus\Tests\Unit\Infrastructure\WordPressTestCase;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ScriptEnqueuer;
+use Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPressTestCase;
 
 final class ScriptEnqueuerTest extends WordPressTestCase
 {
@@ -26,51 +26,33 @@ final class ScriptEnqueuerTest extends WordPressTestCase
         $this->assertTrue($enqueuer->isNeeded());
     }
 
-    public function test_maybe_enqueue_outputs_nothing_when_not_needed(): void
+    public function test_maybe_enqueue_prints_nothing_when_not_needed(): void
     {
+        expect('wp_print_script_tag')->never();
+
         $enqueuer = new ScriptEnqueuer();
 
-        ob_start();
         $enqueuer->maybeEnqueue();
-        $output = ob_get_clean();
-
-        $this->assertSame('', $output);
     }
 
-    public function test_maybe_enqueue_outputs_default_script_url_when_needed(): void
+    public function test_maybe_enqueue_prints_default_script_url_as_module_when_needed(): void
     {
         expect('esc_url')
             ->once()
             ->with('https://kochmodus.de/build/assets/kochmodus-widget.js')
-            ->andReturn('https://kochmodus.de/build/assets/kochmodus-widget.js');
-
-        $enqueuer = new ScriptEnqueuer();
-        $enqueuer->markNeeded();
-
-        ob_start();
-        $enqueuer->maybeEnqueue();
-        $output = ob_get_clean();
-
-        $this->assertSame(
-            '<script type="module" src="https://kochmodus.de/build/assets/kochmodus-widget.js"></script>' . "\n",
-            $output
-        );
-    }
-
-    public function test_maybe_enqueue_outputs_script_tag_with_type_module(): void
-    {
-        expect('esc_url')
-            ->once()
             ->andReturnFirstArg();
 
+        expect('wp_print_script_tag')
+            ->once()
+            ->with([
+                'type' => 'module',
+                'src' => 'https://kochmodus.de/build/assets/kochmodus-widget.js',
+            ]);
+
         $enqueuer = new ScriptEnqueuer();
         $enqueuer->markNeeded();
 
-        ob_start();
         $enqueuer->maybeEnqueue();
-        $output = ob_get_clean();
-
-        $this->assertStringContainsString('type="module"', $output);
     }
 
     /**
@@ -86,16 +68,16 @@ final class ScriptEnqueuerTest extends WordPressTestCase
             ->with('https://cdn.example.com/widget.js')
             ->andReturnFirstArg();
 
+        expect('wp_print_script_tag')
+            ->once()
+            ->with([
+                'type' => 'module',
+                'src' => 'https://cdn.example.com/widget.js',
+            ]);
+
         $enqueuer = new ScriptEnqueuer();
         $enqueuer->markNeeded();
 
-        ob_start();
         $enqueuer->maybeEnqueue();
-        $output = ob_get_clean();
-
-        $this->assertSame(
-            '<script type="module" src="https://cdn.example.com/widget.js"></script>' . "\n",
-            $output
-        );
     }
 }

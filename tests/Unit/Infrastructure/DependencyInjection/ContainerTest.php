@@ -2,9 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Infrastructure\DependencyInjection;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\DependencyInjection;
 
-use Kochmodus\Infrastructure\DependencyInjection\Container;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\DependencyInjection\Container;
 use PHPUnit\Framework\TestCase;
 use RuntimeException;
 use stdClass;

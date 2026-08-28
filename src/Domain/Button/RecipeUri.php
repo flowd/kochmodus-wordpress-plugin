@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Domain\Button;
+namespace Flowd\KochmodusWordpressPlugin\Domain\Button;
 
 use InvalidArgumentException;
 
