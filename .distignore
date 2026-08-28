@@ -12,9 +12,6 @@
 # WordPress.org page assets (deployed to SVN /assets, not trunk)
 /assets
 
-# Block sources (only the build output ships)
-/blocks/kochmodus-button/src
-
 # Files
 /.distignore
 /.editorconfig

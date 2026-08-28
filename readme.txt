@@ -1,5 +1,5 @@
 === Kochmodus ===
-Contributors: flowdgmbh
+Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 6.8
@@ -31,6 +31,29 @@ The plugin loads the widget script only on pages where the button is actually us
 * WordPress 6.0 or newer
 * PHP 7.4 or newer
 * Recipe pages with valid [schema.org/Recipe](https://schema.org/Recipe) JSON-LD data
+
+**Source code**
+
+The complete, unminified source code — including the Gutenberg block sources — ships with the plugin (`blocks/kochmodus-button/src`) and is also available at [github.com/flowd/kochmodus-wordpress-plugin](https://github.com/flowd/kochmodus-wordpress-plugin).
+
+== External services ==
+
+This plugin embeds the Kochmodus cooking mode widget, a service operated by Flowd GmbH. The widget is required for the core functionality of this plugin: it renders the gesture-controlled cooking mode when a visitor clicks a Kochmodus button.
+
+On pages that render a Kochmodus button, the widget script is loaded from `https://kochmodus.de` in the visitor's browser. As with any HTTP request, the visitor's IP address and user agent are transmitted to the Kochmodus servers at that point.
+
+When a visitor starts the cooking mode, the following data is sent to the Kochmodus service:
+
+* The site's Access Token, which is exchanged for a short-lived session token.
+* The URL of the recipe page (or the recipe URI configured on the button). Kochmodus servers fetch this URL once to read the page's public schema.org/Recipe data (cached for 15 minutes).
+* Anonymous usage statistics for the cooking-mode session (e.g. steps viewed, time per step, whether gesture control was used, optional rating). No IP addresses or user agents are stored with these statistics, and no cookies are set.
+
+The hands-free gesture control uses the visitor's camera **only after the visitor grants the browser's camera permission**. All gesture recognition runs locally in the visitor's browser; no video or audio is ever recorded or transmitted.
+
+No data is sent to Kochmodus from pages that do not contain a Kochmodus button.
+
+* Service provider: Flowd GmbH ([imprint](https://kochmodus.de/impressum))
+* Privacy policy: [kochmodus.de/datenschutz](https://kochmodus.de/datenschutz)
 
 == Installation ==
 
