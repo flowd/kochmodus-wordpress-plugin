@@ -6,6 +6,8 @@ namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Application\Settings;
 
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SaveSettingsCommand;
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsService;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\SettingsRepositoryInterface;
@@ -70,11 +72,11 @@ final class SettingsServiceTest extends TestCase
         $repository->shouldReceive('save')
             ->once()
             ->with(Mockery::on(function (PluginSettings $settings): bool {
-                return $settings->defaultBackgroundColor() !== null
+                return $settings->defaultBackgroundColor() instanceof Color
                     && $settings->defaultBackgroundColor()->value() === '#ff0000'
-                    && $settings->defaultHoverBackgroundColor() !== null
+                    && $settings->defaultHoverBackgroundColor() instanceof Color
                     && $settings->defaultHoverBackgroundColor()->value() === '#cc0000'
-                    && $settings->defaultColor() !== null
+                    && $settings->defaultColor() instanceof Color
                     && $settings->defaultColor()->value() === '#ffffff';
             }));
 
@@ -126,7 +128,7 @@ final class SettingsServiceTest extends TestCase
         $repository->shouldReceive('save')
             ->once()
             ->with(Mockery::on(function (PluginSettings $settings): bool {
-                return $settings->defaultLabel() !== null
+                return $settings->defaultLabel() instanceof ButtonLabel
                     && $settings->defaultLabel()->value() === 'Jetzt kochen!';
             }));
 

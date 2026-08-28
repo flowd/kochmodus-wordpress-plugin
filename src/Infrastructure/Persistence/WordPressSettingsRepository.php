@@ -42,16 +42,16 @@ final class WordPressSettingsRepository implements SettingsRepositoryInterface
     {
         update_option(self::OPTION_KEY, [
             'access_token' => $settings->accessToken()->value(),
-            'label' => $settings->defaultLabel() !== null
+            'label' => $settings->defaultLabel() instanceof ButtonLabel
                 ? $settings->defaultLabel()->value()
                 : '',
-            'background_color' => $settings->defaultBackgroundColor() !== null
+            'background_color' => $settings->defaultBackgroundColor() instanceof Color
                 ? $settings->defaultBackgroundColor()->value()
                 : '',
-            'hover_background_color' => $settings->defaultHoverBackgroundColor() !== null
+            'hover_background_color' => $settings->defaultHoverBackgroundColor() instanceof Color
                 ? $settings->defaultHoverBackgroundColor()->value()
                 : '',
-            'color' => $settings->defaultColor() !== null
+            'color' => $settings->defaultColor() instanceof Color
                 ? $settings->defaultColor()->value()
                 : '',
         ]);

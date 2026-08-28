@@ -4,8 +4,8 @@ declare(strict_types = 1);
 
 namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Domain\Button;
 
-use InvalidArgumentException;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\RecipeUri;
+use InvalidArgumentException;
 use PHPUnit\Framework\TestCase;
 
 final class RecipeUriTest extends TestCase

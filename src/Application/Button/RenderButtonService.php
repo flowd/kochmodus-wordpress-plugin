@@ -53,7 +53,7 @@ final class RenderButtonService implements RenderButtonServiceInterface
             return new ButtonLabel($label);
         }
 
-        if ($settings->defaultLabel() !== null) {
+        if ($settings->defaultLabel() instanceof ButtonLabel) {
             return $settings->defaultLabel();
         }
 
@@ -68,19 +68,19 @@ final class RenderButtonService implements RenderButtonServiceInterface
         $styles = [];
 
         $validatedBackground = $this->validateColor($backgroundColor)
-            ?? ($settings->defaultBackgroundColor() !== null ? $settings->defaultBackgroundColor()->value() : null);
+            ?? ($settings->defaultBackgroundColor() instanceof Color ? $settings->defaultBackgroundColor()->value() : null);
         if ($validatedBackground !== null) {
             $styles[] = '--kochmodus-button-background: ' . $validatedBackground;
         }
 
         $validatedHoverBackground = $this->validateColor($hoverBackgroundColor)
-            ?? ($settings->defaultHoverBackgroundColor() !== null ? $settings->defaultHoverBackgroundColor()->value() : null);
+            ?? ($settings->defaultHoverBackgroundColor() instanceof Color ? $settings->defaultHoverBackgroundColor()->value() : null);
         if ($validatedHoverBackground !== null) {
             $styles[] = '--kochmodus-button-hover-background: ' . $validatedHoverBackground;
         }
 
         $validatedColor = $this->validateColor($color)
-            ?? ($settings->defaultColor() !== null ? $settings->defaultColor()->value() : null);
+            ?? ($settings->defaultColor() instanceof Color ? $settings->defaultColor()->value() : null);
         if ($validatedColor !== null) {
             $styles[] = '--kochmodus-button-color: ' . $validatedColor;
         }

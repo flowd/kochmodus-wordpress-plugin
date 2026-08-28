@@ -5,6 +5,7 @@ declare(strict_types = 1);
 namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 /**
@@ -30,15 +31,15 @@ final class GlobalStylesRenderer
 
         $variables = [];
 
-        if ($settings->defaultBackgroundColor() !== null) {
+        if ($settings->defaultBackgroundColor() instanceof Color) {
             $variables[] = '--kochmodus-button-background: ' . $settings->defaultBackgroundColor()->value() . ';';
         }
 
-        if ($settings->defaultHoverBackgroundColor() !== null) {
+        if ($settings->defaultHoverBackgroundColor() instanceof Color) {
             $variables[] = '--kochmodus-button-hover-background: ' . $settings->defaultHoverBackgroundColor()->value() . ';';
         }
 
-        if ($settings->defaultColor() !== null) {
+        if ($settings->defaultColor() instanceof Color) {
             $variables[] = '--kochmodus-button-color: ' . $settings->defaultColor()->value() . ';';
         }
 

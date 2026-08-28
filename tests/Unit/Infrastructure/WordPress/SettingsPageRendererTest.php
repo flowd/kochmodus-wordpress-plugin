@@ -200,7 +200,7 @@ final class SettingsPageRendererTest extends WordPressTestCase
     {
         when('esc_attr')->returnArg();
 
-        $renderer = new SettingsPageRenderer($this->createSettingsService(null));
+        $renderer = new SettingsPageRenderer($this->createSettingsService());
 
         ob_start();
         $renderer->renderLabelField();

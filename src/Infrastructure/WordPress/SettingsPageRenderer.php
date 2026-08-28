@@ -100,7 +100,7 @@ final class SettingsPageRenderer
     {
         $settings = $this->settingsService->getSettings();
         $value = '';
-        if ($settings instanceof PluginSettings && $settings->defaultLabel() !== null) {
+        if ($settings instanceof PluginSettings && $settings->defaultLabel() instanceof ButtonLabel) {
             $value = $settings->defaultLabel()->value();
         }
         printf(
@@ -119,7 +119,7 @@ final class SettingsPageRenderer
         $value = '';
         if ($settings instanceof PluginSettings) {
             $color = $this->settingsColorByKey($settings, $key);
-            $value = $color !== null ? $color->value() : '';
+            $value = $color instanceof Color ? $color->value() : '';
         }
         printf(
             '<input type="text" id="kochmodus_%1$s" name="kochmodus_settings[%1$s]" value="%2$s" class="regular-text kochmodus-color-field" placeholder="%3$s" pattern="\s*(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\([^)]*\))\s*" />',

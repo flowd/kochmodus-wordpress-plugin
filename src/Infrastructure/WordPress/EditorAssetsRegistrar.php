@@ -5,6 +5,8 @@ declare(strict_types = 1);
 namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 /**
@@ -30,16 +32,16 @@ final class EditorAssetsRegistrar
         }
 
         $defaults = [
-            'label' => $settings->defaultLabel() !== null
+            'label' => $settings->defaultLabel() instanceof ButtonLabel
                 ? $settings->defaultLabel()->value()
                 : '',
-            'backgroundColor' => $settings->defaultBackgroundColor() !== null
+            'backgroundColor' => $settings->defaultBackgroundColor() instanceof Color
                 ? $settings->defaultBackgroundColor()->value()
                 : '',
-            'hoverBackgroundColor' => $settings->defaultHoverBackgroundColor() !== null
+            'hoverBackgroundColor' => $settings->defaultHoverBackgroundColor() instanceof Color
                 ? $settings->defaultHoverBackgroundColor()->value()
                 : '',
-            'color' => $settings->defaultColor() !== null
+            'color' => $settings->defaultColor() instanceof Color
                 ? $settings->defaultColor()->value()
                 : '',
         ];
