@@ -2,11 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Application\Settings;
+namespace Flowd\KochmodusWordpressPlugin\Application\Settings;
 
-use Kochmodus\Domain\Settings\AccessToken;
-use Kochmodus\Domain\Settings\PluginSettings;
-use Kochmodus\Domain\Settings\SettingsRepositoryInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\SettingsRepositoryInterface;
 
 final class SettingsService implements SettingsServiceInterface
 {
@@ -25,12 +27,34 @@ final class SettingsService implements SettingsServiceInterface
     public function saveSettings(SaveSettingsCommand $command): PluginSettings
     {
         $settings = new PluginSettings(
-            new AccessToken($command->accessToken())
+            new AccessToken($command->accessToken()),
+            $this->toColor($command->backgroundColor()),
+            $this->toColor($command->hoverBackgroundColor()),
+            $this->toColor($command->color()),
+            $this->toLabel($command->label())
         );
 
         $this->repository->save($settings);
 
         return $settings;
+    }
+
+    private function toColor(?string $value): ?Color
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+
+        return new Color($value);
+    }
+
+    private function toLabel(?string $value): ?ButtonLabel
+    {
+        if ($value === null || trim($value) === '') {
+            return null;
+        }
+
+        return new ButtonLabel($value);
     }
 
     public function deleteSettings(): void

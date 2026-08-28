@@ -2,12 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
-use Kochmodus\Application\Button\RenderButtonServiceInterface;
-use Kochmodus\Application\Settings\SettingsServiceInterface;
-use Kochmodus\Domain\Button\ButtonLabel;
-use Kochmodus\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 final class ShortcodeRegistrar
 {
@@ -48,7 +47,7 @@ final class ShortcodeRegistrar
 
         /** @var array<string, string> $atts */
         $atts = shortcode_atts([
-            'label' => ButtonLabel::DEFAULT,
+            'label' => '',
             'recipe_uri' => '',
             'background_color' => '',
             'hover_background_color' => '',
@@ -59,7 +58,7 @@ final class ShortcodeRegistrar
 
         return $this->renderService->render(
             $settings,
-            $atts['label'],
+            $atts['label'] !== '' ? $atts['label'] : null,
             $atts['recipe_uri'] !== '' ? $atts['recipe_uri'] : null,
             $atts['background_color'] !== '' ? $atts['background_color'] : null,
             $atts['hover_background_color'] !== '' ? $atts['hover_background_color'] : null,

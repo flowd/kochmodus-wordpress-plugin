@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Domain\Button;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Domain\Button;
 
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use InvalidArgumentException;
-use Kochmodus\Domain\Button\Color;
 use PHPUnit\Framework\TestCase;
 
 final class ColorTest extends TestCase

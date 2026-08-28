@@ -2,10 +2,9 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Application\Button;
+namespace Flowd\KochmodusWordpressPlugin\Application\Button;
 
-use Kochmodus\Domain\Button\ButtonLabel;
-use Kochmodus\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 interface RenderButtonServiceInterface
 {
@@ -14,7 +13,7 @@ interface RenderButtonServiceInterface
      */
     public function render(
         PluginSettings $settings,
-        string $label = ButtonLabel::DEFAULT,
+        ?string $label = null,
         ?string $recipeUri = null,
         ?string $backgroundColor = null,
         ?string $hoverBackgroundColor = null,

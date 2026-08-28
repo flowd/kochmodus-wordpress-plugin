@@ -11,7 +11,7 @@ if (!defined('ABSPATH')) {
         <?php
         settings_fields('kochmodus_settings_group');
         do_settings_sections('kochmodus-settings');
-        submit_button('Save Settings');
+        submit_button(__('Save Settings', 'kochmodus'));
         ?>
     </form>
 </div>

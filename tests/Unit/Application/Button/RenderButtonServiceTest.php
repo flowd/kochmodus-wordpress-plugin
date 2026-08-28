@@ -2,11 +2,13 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Application\Button;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Application\Button;
 
-use Kochmodus\Application\Button\RenderButtonService;
-use Kochmodus\Domain\Settings\AccessToken;
-use Kochmodus\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonService;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 use PHPUnit\Framework\TestCase;
 
 final class RenderButtonServiceTest extends TestCase
@@ -62,6 +64,34 @@ final class RenderButtonServiceTest extends TestCase
             ''
         );
 
+        $this->assertStringNotContainsString('data-kochmodus-recipe-uri', $html);
+    }
+
+    public function test_render_omits_invalid_recipe_uri_instead_of_throwing(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $this->settings,
+            'Kochmodus starten',
+            'rezept-slug'
+        );
+
+        $this->assertStringContainsString('<kochmodus-button', $html);
+        $this->assertStringNotContainsString('data-kochmodus-recipe-uri', $html);
+    }
+
+    public function test_render_omits_recipe_uri_with_disallowed_scheme(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $this->settings,
+            'Kochmodus starten',
+            'javascript:alert(1)'
+        );
+
+        $this->assertStringContainsString('<kochmodus-button', $html);
         $this->assertStringNotContainsString('data-kochmodus-recipe-uri', $html);
     }
 
@@ -194,6 +224,146 @@ final class RenderButtonServiceTest extends TestCase
         );
 
         $this->assertStringNotContainsString('style=', $html);
+    }
+
+    public function test_render_falls_back_to_settings_default_label(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            null,
+            null,
+            null,
+            new ButtonLabel('Jetzt kochen!')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render($settings);
+
+        $this->assertStringContainsString('label="Jetzt kochen!"', $html);
+    }
+
+    public function test_render_prefers_explicit_label_over_settings_default(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            null,
+            null,
+            null,
+            new ButtonLabel('Jetzt kochen!')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render($settings, 'Los gehts');
+
+        $this->assertStringContainsString('label="Los gehts"', $html);
+    }
+
+    public function test_render_uses_settings_default_label_when_explicit_label_empty(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            null,
+            null,
+            null,
+            new ButtonLabel('Jetzt kochen!')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render($settings, '   ');
+
+        $this->assertStringContainsString('label="Jetzt kochen!"', $html);
+    }
+
+    public function test_render_falls_back_to_settings_default_colors(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            new Color('#111111'),
+            new Color('#222222'),
+            new Color('#333333')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render($settings);
+
+        $this->assertStringContainsString('--kochmodus-button-background: #111111', $html);
+        $this->assertStringContainsString('--kochmodus-button-hover-background: #222222', $html);
+        $this->assertStringContainsString('--kochmodus-button-color: #333333', $html);
+    }
+
+    public function test_render_prefers_explicit_colors_over_settings_defaults(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            new Color('#111111'),
+            new Color('#222222'),
+            new Color('#333333')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $settings,
+            'Kochmodus starten',
+            null,
+            '#ff0000',
+            '#cc0000',
+            '#ffffff'
+        );
+
+        $this->assertStringContainsString('--kochmodus-button-background: #ff0000', $html);
+        $this->assertStringContainsString('--kochmodus-button-hover-background: #cc0000', $html);
+        $this->assertStringContainsString('--kochmodus-button-color: #ffffff', $html);
+        $this->assertStringNotContainsString('#111111', $html);
+        $this->assertStringNotContainsString('#222222', $html);
+        $this->assertStringNotContainsString('#333333', $html);
+    }
+
+    public function test_render_mixes_explicit_colors_and_settings_defaults(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            new Color('#111111'),
+            new Color('#222222'),
+            new Color('#333333')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $settings,
+            'Kochmodus starten',
+            null,
+            '#ff0000'
+        );
+
+        $this->assertStringContainsString('--kochmodus-button-background: #ff0000', $html);
+        $this->assertStringContainsString('--kochmodus-button-hover-background: #222222', $html);
+        $this->assertStringContainsString('--kochmodus-button-color: #333333', $html);
+    }
+
+    public function test_render_falls_back_to_settings_default_when_explicit_color_invalid(): void
+    {
+        $settings = new PluginSettings(
+            new AccessToken('mytoken'),
+            new Color('#111111')
+        );
+
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $settings,
+            'Kochmodus starten',
+            null,
+            'injection; url(x)'
+        );
+
+        $this->assertStringContainsString('--kochmodus-button-background: #111111', $html);
+        $this->assertStringNotContainsString('injection', $html);
     }
 
     public function test_render_escapes_all_attributes(): void

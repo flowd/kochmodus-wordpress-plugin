@@ -4,7 +4,7 @@ Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 6.8
 Stable tag: 1.0.0
-Requires PHP: ^7.4|^8.0
+Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -30,6 +30,7 @@ The plugin loads the widget script only on pages where the button is actually us
 * A Kochmodus account and Access Token from [kochmodus.de](https://kochmodus.de)
 * WordPress 6.0 or newer
 * PHP 7.4 or newer
+* Recipe pages with valid [schema.org/Recipe](https://schema.org/Recipe) JSON-LD data
 
 == Installation ==
 
@@ -58,9 +59,21 @@ Yes. Use the `[kochmodus_button]` shortcode in the classic editor or any page bu
 
 The widget falls back to the current browser URL.
 
+= The cooking mode opens but shows no recipe. Why? =
+
+The recipe page needs valid [schema.org/Recipe](https://schema.org/Recipe) JSON-LD data. Verify your page with the [Google Rich Results Test](https://search.google.com/test/rich-results).
+
+= The button renders but does not react to clicks. Why? =
+
+Check the Access Token under **Settings > Kochmodus** and make sure your WordPress domain is registered under **Domains** in the Kochmodus dashboard.
+
 = Does the widget script load on every page? =
 
 No. It is only enqueued on pages that actually render a Kochmodus button.
+
+= Can I change the button label or colors for the whole site at once? =
+
+Yes. Under **Settings > Kochmodus** you can set a default label and default colors (background, hover background, label) for all buttons. Values set on an individual post or page always take precedence.
 
 == Screenshots ==
 

@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\DependencyInjection;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\DependencyInjection;
 
 use RuntimeException;
 

@@ -2,12 +2,14 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\Persistence;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\Persistence;
 
+use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\SettingsRepositoryInterface;
 use InvalidArgumentException;
-use Kochmodus\Domain\Settings\AccessToken;
-use Kochmodus\Domain\Settings\PluginSettings;
-use Kochmodus\Domain\Settings\SettingsRepositoryInterface;
 
 final class WordPressSettingsRepository implements SettingsRepositoryInterface
 {
@@ -25,7 +27,11 @@ final class WordPressSettingsRepository implements SettingsRepositoryInterface
 
         try {
             return new PluginSettings(
-                new AccessToken(is_string($accessToken) ? $accessToken : '')
+                new AccessToken(is_string($accessToken) ? $accessToken : ''),
+                $this->toColor($data['background_color'] ?? null),
+                $this->toColor($data['hover_background_color'] ?? null),
+                $this->toColor($data['color'] ?? null),
+                $this->toLabel($data['label'] ?? null)
             );
         } catch (InvalidArgumentException $e) {
             return null;
@@ -36,7 +42,43 @@ final class WordPressSettingsRepository implements SettingsRepositoryInterface
     {
         update_option(self::OPTION_KEY, [
             'access_token' => $settings->accessToken()->value(),
+            'label' => $settings->defaultLabel() instanceof ButtonLabel
+                ? $settings->defaultLabel()->value()
+                : '',
+            'background_color' => $settings->defaultBackgroundColor() instanceof Color
+                ? $settings->defaultBackgroundColor()->value()
+                : '',
+            'hover_background_color' => $settings->defaultHoverBackgroundColor() instanceof Color
+                ? $settings->defaultHoverBackgroundColor()->value()
+                : '',
+            'color' => $settings->defaultColor() instanceof Color
+                ? $settings->defaultColor()->value()
+                : '',
         ]);
+    }
+
+    /** @param mixed $value */
+    private function toColor($value): ?Color
+    {
+        if (!is_string($value) || $value === '') {
+            return null;
+        }
+
+        try {
+            return new Color($value);
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
+    }
+
+    /** @param mixed $value */
+    private function toLabel($value): ?ButtonLabel
+    {
+        if (!is_string($value) || trim($value) === '') {
+            return null;
+        }
+
+        return new ButtonLabel($value);
     }
 
     public function delete(): void

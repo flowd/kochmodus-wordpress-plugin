@@ -2,16 +2,16 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPress;
 
 use function Brain\Monkey\Functions\expect;
-use Kochmodus\Application\Button\RenderButtonServiceInterface;
-use Kochmodus\Application\Settings\SettingsServiceInterface;
-use Kochmodus\Domain\Settings\AccessToken;
-use Kochmodus\Domain\Settings\PluginSettings;
-use Kochmodus\Infrastructure\WordPress\BlockRegistrar;
-use Kochmodus\Infrastructure\WordPress\ScriptEnqueuerInterface;
-use Kochmodus\Tests\Unit\Infrastructure\WordPressTestCase;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\BlockRegistrar;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ScriptEnqueuerInterface;
+use Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPressTestCase;
 use Mockery;
 use Mockery\MockInterface;
 
@@ -54,7 +54,7 @@ final class BlockRegistrarTest extends WordPressTestCase
             ->once()
             ->with(
                 $settings,
-                'Kochmodus starten',
+                null,
                 null,
                 null,
                 null,
@@ -125,7 +125,7 @@ final class BlockRegistrarTest extends WordPressTestCase
             ->once()
             ->with(
                 $settings,
-                'Kochmodus starten',
+                null,
                 null,
                 '#ff0000',
                 '#cc0000',

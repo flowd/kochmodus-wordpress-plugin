@@ -2,16 +2,18 @@
 
 declare(strict_types = 1);
 
-use Kochmodus\Application\Button\RenderButtonService;
-use Kochmodus\Application\Settings\SettingsService;
-use Kochmodus\Domain\Settings\SettingsRepositoryInterface;
-use Kochmodus\Infrastructure\DependencyInjection\Container;
-use Kochmodus\Infrastructure\Persistence\WordPressSettingsRepository;
-use Kochmodus\Infrastructure\WordPress\AdminMenuRegistrar;
-use Kochmodus\Infrastructure\WordPress\BlockRegistrar;
-use Kochmodus\Infrastructure\WordPress\ScriptEnqueuer;
-use Kochmodus\Infrastructure\WordPress\SettingsPageRenderer;
-use Kochmodus\Infrastructure\WordPress\ShortcodeRegistrar;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonService;
+use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsService;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\SettingsRepositoryInterface;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\DependencyInjection\Container;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\Persistence\WordPressSettingsRepository;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\AdminMenuRegistrar;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\BlockRegistrar;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\EditorAssetsRegistrar;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\GlobalStylesRenderer;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ScriptEnqueuer;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\SettingsPageRenderer;
+use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\ShortcodeRegistrar;
 
 $container = new Container();
 
@@ -36,6 +38,14 @@ $container->set(ScriptEnqueuer::class, function (): ScriptEnqueuer {
 
 $container->set(SettingsPageRenderer::class, function (Container $c): SettingsPageRenderer {
     return new SettingsPageRenderer($c->get(SettingsService::class));
+});
+
+$container->set(GlobalStylesRenderer::class, function (Container $c): GlobalStylesRenderer {
+    return new GlobalStylesRenderer($c->get(SettingsService::class));
+});
+
+$container->set(EditorAssetsRegistrar::class, function (Container $c): EditorAssetsRegistrar {
+    return new EditorAssetsRegistrar($c->get(SettingsService::class));
 });
 
 $container->set(AdminMenuRegistrar::class, function (Container $c): AdminMenuRegistrar {

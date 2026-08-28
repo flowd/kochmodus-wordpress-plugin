@@ -2,10 +2,10 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Tests\Unit\Domain\Settings;
+namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Domain\Settings;
 
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
 use InvalidArgumentException;
-use Kochmodus\Domain\Settings\AccessToken;
 use PHPUnit\Framework\TestCase;
 
 final class AccessTokenTest extends TestCase

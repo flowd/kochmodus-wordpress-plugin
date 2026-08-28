@@ -7,7 +7,12 @@
     "category": "embed",
     "icon": "food",
     "description": "Embeds a Kochmodus cooking mode button.",
-    "keywords": ["kochmodus", "recipe", "cooking", "rezept"],
+    "keywords": [
+        "kochmodus",
+        "recipe",
+        "cooking",
+        "rezept"
+    ],
     "supports": {
         "html": false,
         "multiple": true
@@ -15,7 +20,7 @@
     "attributes": {
         "label": {
             "type": "string",
-            "default": "Kochmodus starten"
+            "default": ""
         },
         "recipeUri": {
             "type": "string",

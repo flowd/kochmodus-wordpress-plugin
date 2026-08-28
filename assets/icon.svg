@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" xml:space="preserve"
+     style="fill-rule:evenodd;clip-rule:evenodd;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 120 120"><path d="M0 0h120v120H0z" style="fill:#2f5d49"/>
+    <path d="M32 58c0 15.36 12.64 28 28 28s28-12.64 28-28z"
+          style="fill:none;fill-rule:nonzero;stroke:#fff;stroke-width:5px" transform="translate(-11 7)"/>
+    <path d="m88 58 22-7" style="fill:none;fill-rule:nonzero;stroke:#fff;stroke-width:5px;stroke-linejoin:miter"
+          transform="translate(-11 7)"/>
+    <path d="M46 26q-5 6 0 12t0 12m14-30q-5 6 0 12t0 12m14-18q-5 6 0 12t0 12"
+          style="fill:none;fill-rule:nonzero;stroke:#e2b33c;stroke-width:4.5px;stroke-linejoin:miter"
+          transform="translate(-11 7)"/></svg>

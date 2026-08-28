@@ -6,6 +6,8 @@ WordPress plugin to embed the [Kochmodus](https://kochmodus.de) cooking mode wid
 
 - WordPress >= 6.0
 - PHP >= 7.4
+- A Kochmodus account with an Access Token — sign up at [kochmodus.de](https://kochmodus.de)
+- Recipe pages must contain valid [schema.org/Recipe JSON-LD data](https://schema.org/Recipe), otherwise the cooking mode cannot load the recipe
 
 ## Installation
 
@@ -36,7 +38,20 @@ Then activate the plugin in the WordPress admin under **Plugins**.
 
 ### Access Token
 
-Go to **Settings > Kochmodus** in the WordPress admin and enter your Access Token.
+Go to **Settings > Kochmodus** in the WordPress admin and enter your Access Token. You find the token in your [Kochmodus dashboard](https://kochmodus.de/dashboard/token) under **Token**.
+
+### Button Defaults
+
+On the same settings page you can optionally set global defaults for all Kochmodus buttons:
+
+- **Button Label**
+- **Background Color**
+- **Hover Background Color**
+- **Label Color**
+
+The color fields use the native WordPress color picker; hex (`#rrggbb`) and `rgb()`/`rgba()` values are accepted. Leave a field empty to use the widget's built-in default. Values set on an individual post or page (via block sidebar or shortcode attributes) always take precedence over these defaults.
+
+The default colors are also printed as CSS custom properties on `:root` in `wp_head`, so they even apply to `<kochmodus-button>` elements hand-coded in theme templates. Note that for hand-coded buttons the default *label* does not apply (it is an HTML attribute, not CSS), and you have to set the `data-kochmodus-access-token` attribute and load the widget script yourself.
 
 ### Widget Script URL (Development Override)
 
@@ -45,7 +60,7 @@ By default, the plugin loads the widget script from `https://kochmodus.de/build/
 For local development, you can override this by adding the following to your `wp-config.php`:
 
 ```php
-define('KOCHMODUS_WIDGET_SCRIPT_URL', 'https://kochmodus-app.ddev.site/build/assets/kochmodus-widget.js');
+define('KOCHMODUS_WIDGET_SCRIPT_URL', 'https://app.kochmodus.localdev/build/assets/kochmodus-widget.js');
 ```
 
 ## Usage
@@ -98,6 +113,20 @@ With colors and recipe URI set:
 
 The widget script (`<script type="module">`) is only loaded on pages where the button is actually used.
 
+## Troubleshooting
+
+**The button renders but does not react to clicks.**
+Check the Access Token under **Settings > Kochmodus** and make sure your WordPress domain is registered under **Domains** in the Kochmodus dashboard.
+
+**The cooking mode opens but shows no recipe.**
+The recipe page needs valid [schema.org/Recipe JSON-LD data](https://schema.org/Recipe). Verify with the [Google Rich Results Test](https://search.google.com/test/rich-results).
+
+**The styling does not match the theme.**
+The button colors can also be overridden globally via theme CSS using the custom properties `--kochmodus-button-background`, `--kochmodus-button-hover-background` and `--kochmodus-button-color`.
+
+**The widget script is not loaded.**
+The script is only enqueued on pages that render the Kochmodus block or shortcode. Check that the block was actually added to the content.
+
 ## Development
 
 ```bash
@@ -113,7 +142,7 @@ npm run start             # Watch mode for block development
 
 ### Architecture
 
-DDD layered architecture with PSR-4 autoloading (namespace: `Kochmodus\`):
+DDD layered architecture with PSR-4 autoloading (namespace: `Flowd\KochmodusWordpressPlugin\`):
 
 - `src/Domain/` - Pure PHP Value Objects, zero WordPress dependencies
 - `src/Application/` - Services (SettingsService, RenderButtonService)

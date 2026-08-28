@@ -2,7 +2,7 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Domain\Settings;
+namespace Flowd\KochmodusWordpressPlugin\Domain\Settings;
 
 use InvalidArgumentException;
 

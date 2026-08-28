@@ -8,3 +8,10 @@ blocks/kochmodus-button/build/
 .php-cs-fixer.cache
 .pnpm-store
 .rector-cache/
+.idea/
+.DS_Store
+.vscode
+.project
+.history
+.claude/settings.local.json
+.quellen

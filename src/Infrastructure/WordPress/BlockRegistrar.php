@@ -2,12 +2,11 @@
 
 declare(strict_types = 1);
 
-namespace Kochmodus\Infrastructure\WordPress;
+namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
-use Kochmodus\Application\Button\RenderButtonServiceInterface;
-use Kochmodus\Application\Settings\SettingsServiceInterface;
-use Kochmodus\Domain\Button\ButtonLabel;
-use Kochmodus\Domain\Settings\PluginSettings;
+use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
+use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 final class BlockRegistrar
 {
@@ -45,7 +44,7 @@ final class BlockRegistrar
             return '<!-- Kochmodus: Plugin not configured -->';
         }
 
-        $label = isset($attributes['label']) && is_string($attributes['label']) ? $attributes['label'] : ButtonLabel::DEFAULT;
+        $label = isset($attributes['label']) && is_string($attributes['label']) && $attributes['label'] !== '' ? $attributes['label'] : null;
         $recipeUri = isset($attributes['recipeUri']) && is_string($attributes['recipeUri']) && $attributes['recipeUri'] !== '' ? $attributes['recipeUri'] : null;
         $backgroundColor = isset($attributes['backgroundColor']) && is_string($attributes['backgroundColor']) && $attributes['backgroundColor'] !== '' ? $attributes['backgroundColor'] : null;
         $hoverBackgroundColor = isset($attributes['hoverBackgroundColor']) && is_string($attributes['hoverBackgroundColor']) && $attributes['hoverBackgroundColor'] !== '' ? $attributes['hoverBackgroundColor'] : null;

@@ -5,6 +5,8 @@ parameters:
     level: 9
     paths:
         - src
+    scanFiles:
+        - kochmodus.php
     excludePaths:
         - vendor (?)
         - node_modules (?)
