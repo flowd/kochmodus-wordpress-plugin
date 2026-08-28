@@ -152,6 +152,14 @@ DDD layered architecture with PSR-4 autoloading (namespace: `Flowd\KochmodusWord
 
 PHPUnit 9.x with [Brain\Monkey](https://github.com/Brain-WP/BrainMonkey) for WordPress function mocking. Domain tests are pure PHP, infrastructure tests extend `WordPressTestCase`.
 
+### Commit Messages
+
+Commits follow the [Conventional Commits](https://www.conventionalcommits.org/) format defined in [`.gitmessage`](.gitmessage). Enable the template once per clone:
+
+```bash
+git config commit.template .gitmessage
+```
+
 ## License
 
 GPL-2.0-or-later

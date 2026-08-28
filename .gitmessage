@@ -1,0 +1,28 @@
+# <type>(<scope>): <subject>   ← max 50 chars, imperative, no period
+#
+# <body>   ← wrap at 72 chars; explain WHAT & WHY, not how. Blank line above.
+#
+# <footer>   ← BREAKING CHANGE: ... | Closes #123 | Refs #456. Blank line above.
+#
+# ──────────────────────────────────────────────────────────────────────
+# type:
+#   feat     new feature
+#   fix      bug fix
+#   docs     documentation only
+#   style    formatting, no code change (whitespace, semicolons)
+#   refactor a code change, no feature/fix
+#   perf     performance improvement
+#   test     add/fix tests
+#   build    build system, dependencies (expo, pnpm, native)
+#   ci       CI config (workflows, actions)
+#   chore    misc, no src/test changes
+#   revert   revert a previous commit
+#
+# scope (optional): app area — e.g. auth, i18n, router, storybook, tests
+#
+# rules:
+#   - subject lowercase, imperative ("add" not "added"/"adds")
+#   - no period at end of subject
+#   - body & footer optional; separate each block with a blank line
+#   - breaking change: add ! after scope  →  feat(api)!: ...
+#                      or footer  →  BREAKING CHANGE: <description>
