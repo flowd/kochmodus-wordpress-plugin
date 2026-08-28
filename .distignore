@@ -16,13 +16,13 @@
 /.distignore
 /.editorconfig
 /.gitignore
+/.gitmessage
 /.php-cs-fixer.cache
 /.php-cs-fixer.dist.php
 /.phpunit.result.cache
 /AGENTS.md
 /CLAUDE.md
 /README.md
-/composer.json
 /composer.lock
 /coverage.xml
 /package.json
@@ -32,3 +32,7 @@
 /pnpm-lock.yaml
 /pnpm-workspace.yaml
 /rector.php
+
+# Hidden files anywhere in the tree (wp.org forbids hidden files)
+.gitkeep
+.DS_Store
