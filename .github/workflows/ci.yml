@@ -20,10 +20,13 @@ jobs:
   rector:
     uses: ./.github/workflows/rector.yml
 
+  compat:
+    uses: ./.github/workflows/compat.yml
+
   tests:
-    needs: [cs-fixer, phpstan, rector]
+    needs: [cs-fixer, phpstan, rector, compat]
     uses: ./.github/workflows/tests.yml
 
   coverage:
-    needs: [cs-fixer, phpstan, rector]
+    needs: [cs-fixer, phpstan, rector, compat]
     uses: ./.github/workflows/coverage.yml

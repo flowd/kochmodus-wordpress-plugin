@@ -1,0 +1,33 @@
+name: PHP Compatibility
+
+on:
+  workflow_call:
+
+jobs:
+  compat:
+    name: PHP Compatibility (7.4+)
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.4'
+          tools: composer
+          coverage: none
+
+      - name: Cache vendor
+        id: vendor-cache
+        uses: actions/cache@v5
+        with:
+          path: vendor
+          key: ${{ runner.os }}-vendor-8.4-${{ hashFiles('**/composer.lock') }}
+
+      - name: Install dependencies
+        if: steps.vendor-cache.outputs.cache-hit != 'true'
+        run: composer install --no-interaction --prefer-dist
+
+      - name: Run PHPCompatibility
+        run: composer compat

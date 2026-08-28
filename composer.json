@@ -8,9 +8,11 @@
     },
     "require-dev": {
         "brain/monkey": "^2.6",
+        "dealerdirect/phpcodesniffer-composer-installer": "^1.0",
         "friendsofphp/php-cs-fixer": "^3.0",
         "fsylum/rector-wordpress": "^1.0",
         "mockery/mockery": "^1.6",
+        "phpcompatibility/phpcompatibility-wp": "^2.1",
         "phpstan/phpstan": "^2.1",
         "phpunit/phpunit": "^9.6",
         "rector/rector": "^2.4",
@@ -36,12 +38,16 @@
             "coverage-check coverage.xml 78"
         ],
         "analyse": "phpstan analyse",
+        "compat": "phpcs",
         "cs": "php-cs-fixer fix --diff --dry-run",
         "cs:fix": "php-cs-fixer fix --diff",
         "rector": "rector process --dry-run",
         "rector:fix": "rector process"
     },
     "config": {
+        "allow-plugins": {
+            "dealerdirect/phpcodesniffer-composer-installer": true
+        },
         "sort-packages": true
     }
 }

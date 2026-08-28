@@ -29,6 +29,7 @@
 /composer.lock
 /coverage.xml
 /package.json
+/phpcs.xml.dist
 /phpstan.neon
 /phpunit.xml.dist
 /pnpm-lock.yaml
