@@ -55,7 +55,7 @@ The default colors are also printed as CSS custom properties on `:root` in `wp_h
 
 ### Widget Script URL (Development Override)
 
-By default, the plugin loads the widget script from `https://kochmodus.de/build/assets/kochmodus-widget.js`.
+By default, the plugin loads the widget script from `https://app.kochmodus.de/build/assets/kochmodus-widget.js`.
 
 For local development, you can override this by adding the following to your `wp-config.php`:
 

@@ -43,7 +43,7 @@ final class ScriptEnqueuerTest extends WordPressTestCase
             ->once()
             ->with(
                 'kochmodus-widget',
-                'https://kochmodus.de/build/assets/kochmodus-widget.js',
+                'https://app.kochmodus.de/build/assets/kochmodus-widget.js',
                 [],
                 null,
                 ['in_footer' => true]
@@ -91,28 +91,28 @@ final class ScriptEnqueuerTest extends WordPressTestCase
     {
         expect('esc_url')
             ->once()
-            ->with('https://kochmodus.de/build/assets/kochmodus-widget.js')
+            ->with('https://app.kochmodus.de/build/assets/kochmodus-widget.js')
             ->andReturnFirstArg();
 
         expect('wp_get_script_tag')
             ->once()
             ->with([
                 'type' => 'module',
-                'src' => 'https://kochmodus.de/build/assets/kochmodus-widget.js',
+                'src' => 'https://app.kochmodus.de/build/assets/kochmodus-widget.js',
                 'id' => 'kochmodus-widget-js',
             ])
-            ->andReturn('<script type="module" src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n");
+            ->andReturn('<script type="module" src="https://app.kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n");
 
         $enqueuer = new ScriptEnqueuer();
 
         $tag = $enqueuer->filterScriptTag(
-            '<script src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>',
+            '<script src="https://app.kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>',
             'kochmodus-widget',
-            'https://kochmodus.de/build/assets/kochmodus-widget.js'
+            'https://app.kochmodus.de/build/assets/kochmodus-widget.js'
         );
 
         $this->assertSame(
-            '<script type="module" src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n",
+            '<script type="module" src="https://app.kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n",
             $tag
         );
     }

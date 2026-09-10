@@ -17,9 +17,7 @@ final class Color
     {
         $trimmed = trim($value);
         if (!$this->isValid($trimmed)) {
-            throw new InvalidArgumentException(
-                sprintf('Invalid color value: "%s".', $value)
-            );
+            throw new InvalidArgumentException('Invalid color value.');
         }
         $this->value = $trimmed;
     }

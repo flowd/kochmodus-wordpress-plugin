@@ -28,7 +28,7 @@ final class Container
     {
         if (!isset($this->instances[$id])) {
             if (!isset($this->factories[$id])) {
-                throw new RuntimeException("Service not found: {$id}");
+                throw new RuntimeException('Service not found: ' . esc_html($id));
             }
             $this->instances[$id] = ($this->factories[$id])($this);
         }

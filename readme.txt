@@ -40,7 +40,7 @@ The complete, unminified source code â€” including the Gutenberg block sources â
 
 This plugin embeds the Kochmodus cooking mode widget, a service operated by Flowd GmbH. The widget is required for the core functionality of this plugin: it renders the gesture-controlled cooking mode when a visitor clicks a Kochmodus button.
 
-On pages that render a Kochmodus button, the widget script is loaded from `https://kochmodus.de` in the visitor's browser. As with any HTTP request, the visitor's IP address and user agent are transmitted to the Kochmodus servers at that point.
+On pages that render a Kochmodus button, the widget script is loaded from `https://app.kochmodus.de` in the visitor's browser. As with any HTTP request, the visitor's IP address and user agent are transmitted to the Kochmodus servers at that point.
 
 When a visitor starts the cooking mode, the following data is sent to the Kochmodus service:
 

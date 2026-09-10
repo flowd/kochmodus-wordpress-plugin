@@ -28,13 +28,15 @@ define('KOCHMODUS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 
 require_once __DIR__ . '/vendor/autoload.php';
 
-/** @var Container $container */
-$container = require __DIR__ . '/config/container.php';
-
 // Activation / Deactivation
 register_activation_hook(__FILE__, [Plugin::class, 'activate']);
 register_deactivation_hook(__FILE__, [Plugin::class, 'deactivate']);
 
 // Boot
-$plugin = new Plugin($container);
-$plugin->boot();
+(static function (): void {
+    /** @var Container $container */
+    $container = require __DIR__ . '/config/container.php';
+
+    $plugin = new Plugin($container);
+    $plugin->boot();
+})();

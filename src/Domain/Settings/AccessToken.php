@@ -19,9 +19,7 @@ final class AccessToken
             throw new InvalidArgumentException('Access token must not be empty.');
         }
         if (strlen($trimmed) > self::MAX_LENGTH) {
-            throw new InvalidArgumentException(
-                sprintf('Access token must not exceed %d characters.', self::MAX_LENGTH)
-            );
+            throw new InvalidArgumentException('Access token must not exceed 255 characters.');
         }
         $this->value = $trimmed;
     }

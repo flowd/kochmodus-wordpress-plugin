@@ -83,7 +83,7 @@ final class GlobalStylesRendererTest extends WordPressTestCase
     {
         expect('wp_register_style')
             ->once()
-            ->with('kochmodus-global-styles', false, [], false);
+            ->with('kochmodus-global-styles', false, [], KOCHMODUS_VERSION);
 
         expect('wp_enqueue_style')
             ->once()

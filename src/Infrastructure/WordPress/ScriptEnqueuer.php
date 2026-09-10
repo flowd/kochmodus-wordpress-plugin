@@ -8,7 +8,7 @@ final class ScriptEnqueuer implements ScriptEnqueuerInterface
 {
     private const SCRIPT_HANDLE = 'kochmodus-widget';
 
-    private const DEFAULT_WIDGET_SCRIPT_URL = 'https://kochmodus.de/build/assets/kochmodus-widget.js';
+    private const DEFAULT_WIDGET_SCRIPT_URL = 'https://app.kochmodus.de/build/assets/kochmodus-widget.js';
 
     private bool $needed = false;
 
@@ -28,11 +28,11 @@ final class ScriptEnqueuer implements ScriptEnqueuerInterface
             return;
         }
 
-        // No version query arg: the widget URL is external and versioned by its host.
         wp_enqueue_script(
             self::SCRIPT_HANDLE,
             $this->getWidgetScriptUrl(),
             [],
+            // phpcs:ignore WordPress.WP.EnqueuedResourceParameters.MissingVersion -- external widget URL, versioned by its host
             null,
             ['in_footer' => true]
         );

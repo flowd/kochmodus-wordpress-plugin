@@ -4,13 +4,21 @@ declare(strict_types = 1);
 
 namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\DependencyInjection;
 
+use function Brain\Monkey\Functions\stubEscapeFunctions;
 use Flowd\KochmodusWordpressPlugin\Infrastructure\DependencyInjection\Container;
-use PHPUnit\Framework\TestCase;
+use Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPressTestCase;
 use RuntimeException;
+
 use stdClass;
 
-final class ContainerTest extends TestCase
+final class ContainerTest extends WordPressTestCase
 {
+    protected function setUp(): void
+    {
+        parent::setUp();
+        stubEscapeFunctions();
+    }
+
     public function test_get_returns_instance_from_factory(): void
     {
         $container = new Container();

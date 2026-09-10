@@ -10,22 +10,15 @@ final class RecipeUri
 {
     private string $value;
 
-    private const ALLOWED_SCHEMES = ['http', 'https'];
-
     public function __construct(string $value)
     {
         $trimmed = trim($value);
         if ($trimmed === '' || filter_var($trimmed, FILTER_VALIDATE_URL) === false) {
-            throw new InvalidArgumentException(
-                sprintf('Invalid recipe URI: "%s".', $value)
-            );
+            throw new InvalidArgumentException('Invalid recipe URI.');
         }
 
-        $scheme = strtolower((string)parse_url($trimmed, PHP_URL_SCHEME));
-        if (!in_array($scheme, self::ALLOWED_SCHEMES, true)) {
-            throw new InvalidArgumentException(
-                sprintf('Recipe URI must use http or https scheme: "%s".', $value)
-            );
+        if (stripos($trimmed, 'http://') !== 0 && stripos($trimmed, 'https://') !== 0) {
+            throw new InvalidArgumentException('Recipe URI must use http or https scheme.');
         }
 
         $this->value = $trimmed;

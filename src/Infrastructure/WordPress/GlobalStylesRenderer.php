@@ -50,7 +50,7 @@ final class GlobalStylesRenderer
             return;
         }
 
-        wp_register_style(self::STYLE_HANDLE, false, [], false);
+        wp_register_style(self::STYLE_HANDLE, false, [], KOCHMODUS_VERSION);
         wp_enqueue_style(self::STYLE_HANDLE);
         wp_add_inline_style(self::STYLE_HANDLE, ':root { ' . implode(' ', $variables) . ' }');
     }
