@@ -37,7 +37,7 @@
             "phpunit --coverage-clover=coverage.xml --coverage-html=coverage/html --coverage-text",
             "coverage-check coverage.xml 78"
         ],
-        "analyse": "phpstan analyse",
+        "analyse": "phpstan analyse --memory-limit=1G",
         "compat": "phpcs",
         "cs": "php-cs-fixer fix --diff --dry-run",
         "cs:fix": "php-cs-fixer fix --diff",
