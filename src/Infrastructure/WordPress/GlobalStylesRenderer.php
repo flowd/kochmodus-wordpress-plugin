@@ -9,12 +9,15 @@ use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 
 /**
- * Prints the configured default button colors as CSS custom properties on :root
- * so hand-coded <kochmodus-button> elements pick them up as well. Per-button
- * inline styles (set by RenderButtonService) override them via CSS specificity.
+ * Enqueues the configured default button colors as CSS custom properties on
+ * :root so hand-coded <kochmodus-button> elements pick them up as well.
+ * Per-button inline styles (set by RenderButtonService) override them via CSS
+ * specificity.
  */
 final class GlobalStylesRenderer
 {
+    private const STYLE_HANDLE = 'kochmodus-global-styles';
+
     private SettingsServiceInterface $settingsService;
 
     public function __construct(SettingsServiceInterface $settingsService)
@@ -22,7 +25,7 @@ final class GlobalStylesRenderer
         $this->settingsService = $settingsService;
     }
 
-    public function printStyles(): void
+    public function enqueueStyles(): void
     {
         $settings = $this->settingsService->getSettings();
         if (!$settings instanceof PluginSettings) {
@@ -47,9 +50,8 @@ final class GlobalStylesRenderer
             return;
         }
 
-        printf(
-            '<style id="kochmodus-global-styles">:root { %s }</style>' . "\n",
-            implode(' ', $variables)
-        );
+        wp_register_style(self::STYLE_HANDLE, false, [], false);
+        wp_enqueue_style(self::STYLE_HANDLE);
+        wp_add_inline_style(self::STYLE_HANDLE, ':root { ' . implode(' ', $variables) . ' }');
     }
 }

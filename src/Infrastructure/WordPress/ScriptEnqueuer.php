@@ -6,6 +6,8 @@ namespace Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress;
 
 final class ScriptEnqueuer implements ScriptEnqueuerInterface
 {
+    private const SCRIPT_HANDLE = 'kochmodus-widget';
+
     private const DEFAULT_WIDGET_SCRIPT_URL = 'https://kochmodus.de/build/assets/kochmodus-widget.js';
 
     private bool $needed = false;
@@ -26,9 +28,33 @@ final class ScriptEnqueuer implements ScriptEnqueuerInterface
             return;
         }
 
-        wp_print_script_tag([
+        // No version query arg: the widget URL is external and versioned by its host.
+        wp_enqueue_script(
+            self::SCRIPT_HANDLE,
+            $this->getWidgetScriptUrl(),
+            [],
+            null,
+            ['in_footer' => true]
+        );
+
+        add_filter('script_loader_tag', [$this, 'filterScriptTag'], 10, 3);
+    }
+
+    /**
+     * The widget is an ES module; wp_enqueue_script() cannot set type="module"
+     * (wp_enqueue_script_module() requires WP 6.5, we support 6.0), so the tag
+     * is rebuilt via the script_loader_tag filter.
+     */
+    public function filterScriptTag(string $tag, string $handle, string $src): string
+    {
+        if ($handle !== self::SCRIPT_HANDLE) {
+            return $tag;
+        }
+
+        return wp_get_script_tag([
             'type' => 'module',
-            'src' => esc_url($this->getWidgetScriptUrl()),
+            'src' => esc_url($src),
+            'id' => self::SCRIPT_HANDLE . '-js',
         ]);
     }
 

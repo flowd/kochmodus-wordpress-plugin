@@ -4,31 +4,36 @@ declare(strict_types = 1);
 
 namespace Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPress;
 
+use function Brain\Monkey\Functions\expect;
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsServiceInterface;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\AccessToken;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\PluginSettings;
 use Flowd\KochmodusWordpressPlugin\Infrastructure\WordPress\GlobalStylesRenderer;
+use Flowd\KochmodusWordpressPlugin\Tests\Unit\Infrastructure\WordPressTestCase;
 use Mockery;
-use Mockery\Adapter\Phpunit\MockeryPHPUnitIntegration;
 use Mockery\MockInterface;
-use PHPUnit\Framework\TestCase;
 
-final class GlobalStylesRendererTest extends TestCase
+final class GlobalStylesRendererTest extends WordPressTestCase
 {
-    use MockeryPHPUnitIntegration;
-
-    public function test_prints_nothing_when_not_configured(): void
+    public function test_enqueues_nothing_when_not_configured(): void
     {
+        expect('wp_register_style')->never();
+        expect('wp_enqueue_style')->never();
+        expect('wp_add_inline_style')->never();
+
         $renderer = new GlobalStylesRenderer($this->createSettingsService(null));
 
-        $this->expectOutputString('');
-        $renderer->printStyles();
+        $renderer->enqueueStyles();
     }
 
-    public function test_prints_nothing_when_no_default_colors_set(): void
+    public function test_enqueues_nothing_when_no_default_colors_set(): void
     {
+        expect('wp_register_style')->never();
+        expect('wp_enqueue_style')->never();
+        expect('wp_add_inline_style')->never();
+
         $settings = new PluginSettings(
             new AccessToken('token123'),
             null,
@@ -39,12 +44,15 @@ final class GlobalStylesRendererTest extends TestCase
 
         $renderer = new GlobalStylesRenderer($this->createSettingsService($settings));
 
-        $this->expectOutputString('');
-        $renderer->printStyles();
+        $renderer->enqueueStyles();
     }
 
-    public function test_prints_all_default_colors_as_root_css_variables(): void
+    public function test_enqueues_all_default_colors_as_root_css_variables(): void
     {
+        $this->expectStyleEnqueue(
+            ':root { --kochmodus-button-background: #ff0000; --kochmodus-button-hover-background: #cc0000; --kochmodus-button-color: #ffffff; }'
+        );
+
         $settings = new PluginSettings(
             new AccessToken('token123'),
             new Color('#ff0000'),
@@ -54,14 +62,13 @@ final class GlobalStylesRendererTest extends TestCase
 
         $renderer = new GlobalStylesRenderer($this->createSettingsService($settings));
 
-        $this->expectOutputString(
-            '<style id="kochmodus-global-styles">:root { --kochmodus-button-background: #ff0000; --kochmodus-button-hover-background: #cc0000; --kochmodus-button-color: #ffffff; }</style>' . "\n"
-        );
-        $renderer->printStyles();
+        $renderer->enqueueStyles();
     }
 
-    public function test_prints_only_set_default_colors(): void
+    public function test_enqueues_only_set_default_colors(): void
     {
+        $this->expectStyleEnqueue(':root { --kochmodus-button-background: #ff0000; }');
+
         $settings = new PluginSettings(
             new AccessToken('token123'),
             new Color('#ff0000')
@@ -69,10 +76,22 @@ final class GlobalStylesRendererTest extends TestCase
 
         $renderer = new GlobalStylesRenderer($this->createSettingsService($settings));
 
-        $this->expectOutputString(
-            '<style id="kochmodus-global-styles">:root { --kochmodus-button-background: #ff0000; }</style>' . "\n"
-        );
-        $renderer->printStyles();
+        $renderer->enqueueStyles();
+    }
+
+    private function expectStyleEnqueue(string $expectedCss): void
+    {
+        expect('wp_register_style')
+            ->once()
+            ->with('kochmodus-global-styles', false, [], false);
+
+        expect('wp_enqueue_style')
+            ->once()
+            ->with('kochmodus-global-styles');
+
+        expect('wp_add_inline_style')
+            ->once()
+            ->with('kochmodus-global-styles', $expectedCss);
     }
 
     private function createSettingsService(?PluginSettings $settings): SettingsServiceInterface

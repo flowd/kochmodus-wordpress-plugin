@@ -2,6 +2,10 @@
 
 declare(strict_types = 1);
 
+if (!defined('ABSPATH')) {
+    exit;
+}
+
 use Flowd\KochmodusWordpressPlugin\Application\Button\RenderButtonService;
 use Flowd\KochmodusWordpressPlugin\Application\Settings\SettingsService;
 use Flowd\KochmodusWordpressPlugin\Domain\Settings\SettingsRepositoryInterface;

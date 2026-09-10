@@ -26,30 +26,33 @@ final class ScriptEnqueuerTest extends WordPressTestCase
         $this->assertTrue($enqueuer->isNeeded());
     }
 
-    public function test_maybe_enqueue_prints_nothing_when_not_needed(): void
+    public function test_maybe_enqueue_enqueues_nothing_when_not_needed(): void
     {
-        expect('wp_print_script_tag')->never();
+        expect('wp_enqueue_script')->never();
 
         $enqueuer = new ScriptEnqueuer();
 
         $enqueuer->maybeEnqueue();
     }
 
-    public function test_maybe_enqueue_prints_default_script_url_as_module_when_needed(): void
+    public function test_maybe_enqueue_enqueues_default_script_url_when_needed(): void
     {
-        expect('esc_url')
-            ->once()
-            ->with('https://kochmodus.de/build/assets/kochmodus-widget.js')
-            ->andReturnFirstArg();
-
-        expect('wp_print_script_tag')
-            ->once()
-            ->with([
-                'type' => 'module',
-                'src' => 'https://kochmodus.de/build/assets/kochmodus-widget.js',
-            ]);
-
         $enqueuer = new ScriptEnqueuer();
+
+        expect('wp_enqueue_script')
+            ->once()
+            ->with(
+                'kochmodus-widget',
+                'https://kochmodus.de/build/assets/kochmodus-widget.js',
+                [],
+                null,
+                ['in_footer' => true]
+            );
+
+        expect('add_filter')
+            ->once()
+            ->with('script_loader_tag', [$enqueuer, 'filterScriptTag'], 10, 3);
+
         $enqueuer->markNeeded();
 
         $enqueuer->maybeEnqueue();
@@ -63,21 +66,65 @@ final class ScriptEnqueuerTest extends WordPressTestCase
     {
         define('KOCHMODUS_WIDGET_SCRIPT_URL', 'https://cdn.example.com/widget.js');
 
-        expect('esc_url')
-            ->once()
-            ->with('https://cdn.example.com/widget.js')
-            ->andReturnFirstArg();
-
-        expect('wp_print_script_tag')
-            ->once()
-            ->with([
-                'type' => 'module',
-                'src' => 'https://cdn.example.com/widget.js',
-            ]);
-
         $enqueuer = new ScriptEnqueuer();
+
+        expect('wp_enqueue_script')
+            ->once()
+            ->with(
+                'kochmodus-widget',
+                'https://cdn.example.com/widget.js',
+                [],
+                null,
+                ['in_footer' => true]
+            );
+
+        expect('add_filter')
+            ->once()
+            ->with('script_loader_tag', [$enqueuer, 'filterScriptTag'], 10, 3);
+
         $enqueuer->markNeeded();
 
         $enqueuer->maybeEnqueue();
+    }
+
+    public function test_filter_script_tag_rewrites_widget_script_to_module(): void
+    {
+        expect('esc_url')
+            ->once()
+            ->with('https://kochmodus.de/build/assets/kochmodus-widget.js')
+            ->andReturnFirstArg();
+
+        expect('wp_get_script_tag')
+            ->once()
+            ->with([
+                'type' => 'module',
+                'src' => 'https://kochmodus.de/build/assets/kochmodus-widget.js',
+                'id' => 'kochmodus-widget-js',
+            ])
+            ->andReturn('<script type="module" src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n");
+
+        $enqueuer = new ScriptEnqueuer();
+
+        $tag = $enqueuer->filterScriptTag(
+            '<script src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>',
+            'kochmodus-widget',
+            'https://kochmodus.de/build/assets/kochmodus-widget.js'
+        );
+
+        $this->assertSame(
+            '<script type="module" src="https://kochmodus.de/build/assets/kochmodus-widget.js" id="kochmodus-widget-js"></script>' . "\n",
+            $tag
+        );
+    }
+
+    public function test_filter_script_tag_leaves_other_handles_untouched(): void
+    {
+        expect('wp_get_script_tag')->never();
+
+        $enqueuer = new ScriptEnqueuer();
+
+        $tag = '<script src="https://example.com/other.js" id="other-js"></script>';
+
+        $this->assertSame($tag, $enqueuer->filterScriptTag($tag, 'other', 'https://example.com/other.js'));
     }
 }

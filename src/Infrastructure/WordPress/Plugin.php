@@ -17,14 +17,8 @@ final class Plugin
 
     public function boot(): void
     {
-        // Translations
-        add_action('init', static function (): void {
-            load_plugin_textdomain(
-                'kochmodus',
-                false,
-                dirname(plugin_basename(KOCHMODUS_PLUGIN_FILE)) . '/languages'
-            );
-        });
+        // Translations are loaded automatically by WordPress since 4.6,
+        // no load_plugin_textdomain() call needed.
 
         // Admin settings
         add_action('admin_menu', [$this->container->get(AdminMenuRegistrar::class), 'register']);
@@ -40,10 +34,11 @@ final class Plugin
         add_action('enqueue_block_editor_assets', [$this->container->get(EditorAssetsRegistrar::class), 'enqueue']);
 
         // Global default colors as CSS custom properties (also styles hand-coded buttons)
-        add_action('wp_head', [$this->container->get(GlobalStylesRenderer::class), 'printStyles']);
+        add_action('wp_enqueue_scripts', [$this->container->get(GlobalStylesRenderer::class), 'enqueueStyles']);
 
-        // Conditional script loading
-        add_action('wp_footer', [$this->container->get(ScriptEnqueuer::class), 'maybeEnqueue']);
+        // Conditional script loading: the needed-flag is set while content renders,
+        // so enqueue in wp_footer — priority 1 runs before wp_print_footer_scripts (20).
+        add_action('wp_footer', [$this->container->get(ScriptEnqueuer::class), 'maybeEnqueue'], 1);
     }
 
     public static function activate(): void
