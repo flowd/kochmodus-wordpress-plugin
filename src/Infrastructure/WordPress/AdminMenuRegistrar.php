@@ -18,8 +18,8 @@ final class AdminMenuRegistrar
     public function register(): void
     {
         $hook = add_options_page(
-            __('Kochmodus Settings', 'kochmodus'),
-            __('Kochmodus', 'kochmodus'),
+            __('Kochmodus Settings', 'flowd-kochmodus'),
+            __('Kochmodus', 'flowd-kochmodus'),
             'manage_options',
             'kochmodus-settings',
             [$this->renderer, 'render']

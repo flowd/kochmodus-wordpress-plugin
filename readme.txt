@@ -1,4 +1,4 @@
-=== Kochmodus ===
+=== Flowd – Cooking Mode ===
 Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
@@ -23,7 +23,7 @@ The plugin loads the widget script only on pages where the button is actually us
 * Custom button colors (background, hover background, text color)
 * Per-button recipe URI override (defaults to the current page URL)
 * Conditional script loading — widget JS is only enqueued when a button is rendered
-* Translation-ready (Text Domain: `kochmodus`)
+* Translation-ready (Text Domain: `flowd-kochmodus`)
 
 **Requirements**
 
@@ -57,7 +57,7 @@ No data is sent to Kochmodus from pages that do not contain a Kochmodus button.
 
 == Installation ==
 
-1. Upload the `kochmodus` folder to `/wp-content/plugins/`, or install via **Plugins > Add New > Upload Plugin**.
+1. Upload the `flowd-kochmodus` folder to `/wp-content/plugins/`, or install via **Plugins > Add New > Upload Plugin**.
 2. Activate the plugin through the **Plugins** menu in WordPress.
 3. Go to **Settings > Kochmodus** and enter your Access Token.
 4. Add the **Kochmodus Button** block to a recipe page, or use the `[kochmodus_button]` shortcode.

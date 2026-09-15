@@ -2,7 +2,7 @@
 <ruleset name="Kochmodus PHP Compatibility">
     <description>Checks PHP cross-version compatibility (PHP 7.4 up to latest).</description>
 
-    <file>kochmodus.php</file>
+    <file>flowd-kochmodus.php</file>
     <file>uninstall.php</file>
     <file>src/</file>
     <file>config/</file>

@@ -1,4 +1,4 @@
-# Kochmodus WordPress Plugin
+# Flowd – Cooking Mode (WordPress Plugin)
 
 WordPress plugin to embed the [Kochmodus](https://kochmodus.de) cooking mode widget on recipe pages. Allows visitors to enter a gesture-controlled cooking mode for any recipe on your site.
 
@@ -23,7 +23,7 @@ Then activate the plugin in the WordPress admin under **Plugins**.
 
 ### Option 2: Upload ZIP via WordPress Admin
 
-1. Download the latest `kochmodus.zip` from the [GitHub Releases](https://github.com/flowdgmbh/kochmodus-wordpress-plugin/releases) page (attached as a release artifact)
+1. Download the latest `flowd-kochmodus.zip` from the [GitHub Releases](https://github.com/flowdgmbh/kochmodus-wordpress-plugin/releases) page (attached as a release artifact)
 2. In the WordPress admin, go to **Plugins > Add New > Upload Plugin**
 3. Select the ZIP file and click **Install Now**
 4. Activate the plugin
@@ -31,7 +31,7 @@ Then activate the plugin in the WordPress admin under **Plugins**.
 ### Option 3: WordPress Plugin Directory
 
 1. In the WordPress admin, go to **Plugins > Add New**
-2. Search for **Kochmodus**
+2. Search for **Flowd – Cooking Mode**
 3. Click **Install Now**, then **Activate**
 
 ## Configuration

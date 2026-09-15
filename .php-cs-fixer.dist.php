@@ -4,7 +4,7 @@ $finder = PhpCsFixer\Finder::create()
     ->in(__DIR__ . '/src')
     ->in(__DIR__ . '/tests')
     ->in(__DIR__ . '/config')
-    ->append([__DIR__ . '/kochmodus.php', __DIR__ . '/uninstall.php']);
+    ->append([__DIR__ . '/flowd-kochmodus.php', __DIR__ . '/uninstall.php']);
 
 return (new PhpCsFixer\Config())
     ->setRiskyAllowed(true)

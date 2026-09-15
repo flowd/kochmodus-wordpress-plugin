@@ -11,28 +11,28 @@ export default function Edit({ attributes, setAttributes }) {
     const effectiveBackgroundColor = backgroundColor || defaults.backgroundColor || '';
     const effectiveHoverBackgroundColor = hoverBackgroundColor || defaults.hoverBackgroundColor || '';
     const effectiveColor = color || defaults.color || '';
-    const effectiveLabel = label || defaults.label || __('Kochmodus starten', 'kochmodus');
+    const effectiveLabel = label || defaults.label || __('Kochmodus starten', 'flowd-kochmodus');
 
     return (
         <>
             <InspectorControls>
-                <PanelBody title={__('Button Settings', 'kochmodus')}>
+                <PanelBody title={__('Button Settings', 'flowd-kochmodus')}>
                     <TextControl
-                        label={__('Button Label', 'kochmodus')}
+                        label={__('Button Label', 'flowd-kochmodus')}
                         value={label}
                         onChange={(value) => setAttributes({ label: value })}
-                        help={__('Leave empty to use the default from Settings > Kochmodus.', 'kochmodus')}
+                        help={__('Leave empty to use the default from Settings > Kochmodus.', 'flowd-kochmodus')}
                     />
                     <TextControl
-                        label={__('Recipe URI (optional)', 'kochmodus')}
+                        label={__('Recipe URI (optional)', 'flowd-kochmodus')}
                         value={recipeUri}
                         onChange={(value) => setAttributes({ recipeUri: value })}
-                        help={__('Leave empty to use the current page URL.', 'kochmodus')}
+                        help={__('Leave empty to use the current page URL.', 'flowd-kochmodus')}
                     />
                 </PanelBody>
-                <PanelBody title={__('Colors', 'kochmodus')} initialOpen={false}>
+                <PanelBody title={__('Colors', 'flowd-kochmodus')} initialOpen={false}>
                     <BaseControl
-                        label={__('Background Color', 'kochmodus')}
+                        label={__('Background Color', 'flowd-kochmodus')}
                         id="kochmodus-bg-color"
                     >
                         <ColorPicker
@@ -47,12 +47,12 @@ export default function Edit({ attributes, setAttributes }) {
                                 onClick={() => setAttributes({ backgroundColor: '' })}
                                 style={{ marginTop: '8px' }}
                             >
-                                {__('Reset', 'kochmodus')}
+                                {__('Reset', 'flowd-kochmodus')}
                             </button>
                         )}
                     </BaseControl>
                     <BaseControl
-                        label={__('Hover Background Color', 'kochmodus')}
+                        label={__('Hover Background Color', 'flowd-kochmodus')}
                         id="kochmodus-hover-bg-color"
                     >
                         <ColorPicker
@@ -67,12 +67,12 @@ export default function Edit({ attributes, setAttributes }) {
                                 onClick={() => setAttributes({ hoverBackgroundColor: '' })}
                                 style={{ marginTop: '8px' }}
                             >
-                                {__('Reset', 'kochmodus')}
+                                {__('Reset', 'flowd-kochmodus')}
                             </button>
                         )}
                     </BaseControl>
                     <BaseControl
-                        label={__('Text Color', 'kochmodus')}
+                        label={__('Text Color', 'flowd-kochmodus')}
                         id="kochmodus-text-color"
                     >
                         <ColorPicker
@@ -87,7 +87,7 @@ export default function Edit({ attributes, setAttributes }) {
                                 onClick={() => setAttributes({ color: '' })}
                                 style={{ marginTop: '8px' }}
                             >
-                                {__('Reset', 'kochmodus')}
+                                {__('Reset', 'flowd-kochmodus')}
                             </button>
                         )}
                     </BaseControl>

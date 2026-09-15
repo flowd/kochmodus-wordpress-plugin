@@ -12,7 +12,7 @@ return RectorConfig::configure()
         __DIR__ . '/src',
         __DIR__ . '/tests',
         __DIR__ . '/config',
-        __DIR__ . '/kochmodus.php',
+        __DIR__ . '/flowd-kochmodus.php',
         __DIR__ . '/uninstall.php',
     ])
     ->withSkip([

@@ -1,6 +1,6 @@
 <?php
 /**
- * Plugin Name:       Kochmodus
+ * Plugin Name:       Flowd – Cooking Mode
  * Plugin URI:        https://kochmodus.de
  * Description:       Embeds the Kochmodus cooking mode widget on recipe pages.
  * Version:           1.0.0
@@ -10,7 +10,7 @@
  * Author URI:        https://flowd.de
  * License:           GPL-2.0-or-later
  * License URI:       https://www.gnu.org/licenses/gpl-2.0.html
- * Text Domain:       kochmodus
+ * Text Domain:       flowd-kochmodus
  */
 
 declare(strict_types = 1);

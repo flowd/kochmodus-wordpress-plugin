@@ -6,7 +6,7 @@ parameters:
     paths:
         - src
     scanFiles:
-        - kochmodus.php
+        - flowd-kochmodus.php
     excludePaths:
         - vendor (?)
         - node_modules (?)

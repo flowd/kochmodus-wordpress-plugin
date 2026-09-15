@@ -33,16 +33,16 @@ final class SettingsPageRenderer
 
         add_settings_section(
             'kochmodus_main_section',
-            __('Kochmodus Configuration', 'kochmodus'),
+            __('Kochmodus Configuration', 'flowd-kochmodus'),
             function (): void {
-                echo '<p>' . esc_html__('Configure your Kochmodus widget integration.', 'kochmodus') . '</p>';
+                echo '<p>' . esc_html__('Configure your Kochmodus widget integration.', 'flowd-kochmodus') . '</p>';
             },
             'kochmodus-settings'
         );
 
         add_settings_field(
             'kochmodus_access_token',
-            __('Access Token', 'kochmodus'),
+            __('Access Token', 'flowd-kochmodus'),
             [$this, 'renderAccessTokenField'],
             'kochmodus-settings',
             'kochmodus_main_section'
@@ -50,16 +50,16 @@ final class SettingsPageRenderer
 
         add_settings_section(
             'kochmodus_appearance_section',
-            __('Button Defaults', 'kochmodus'),
+            __('Button Defaults', 'flowd-kochmodus'),
             function (): void {
-                echo '<p>' . esc_html__('Optional defaults for all Kochmodus buttons. Leave empty to use the widget defaults. Values set on an individual post or page always take precedence.', 'kochmodus') . '</p>';
+                echo '<p>' . esc_html__('Optional defaults for all Kochmodus buttons. Leave empty to use the widget defaults. Values set on an individual post or page always take precedence.', 'flowd-kochmodus') . '</p>';
             },
             'kochmodus-settings'
         );
 
         add_settings_field(
             'kochmodus_label',
-            __('Button Label', 'kochmodus'),
+            __('Button Label', 'flowd-kochmodus'),
             [$this, 'renderLabelField'],
             'kochmodus-settings',
             'kochmodus_appearance_section'
@@ -108,7 +108,7 @@ final class SettingsPageRenderer
             esc_attr($value),
             esc_attr(ButtonLabel::DEFAULT)
         );
-        echo '<p class="description">' . esc_html__('Leave empty to use the built-in default.', 'kochmodus') . '</p>';
+        echo '<p class="description">' . esc_html__('Leave empty to use the built-in default.', 'flowd-kochmodus') . '</p>';
     }
 
     /** @param array<string, string> $args */
@@ -125,9 +125,9 @@ final class SettingsPageRenderer
             '<input type="text" id="kochmodus_%1$s" name="kochmodus_settings[%1$s]" value="%2$s" class="regular-text kochmodus-color-field" placeholder="%3$s" pattern="\s*(#([0-9a-fA-F]{3,4}|[0-9a-fA-F]{6}|[0-9a-fA-F]{8})|rgba?\([^)]*\))\s*" />',
             esc_attr($key),
             esc_attr($value),
-            esc_attr__('e.g. #16a34a', 'kochmodus')
+            esc_attr__('e.g. #16a34a', 'flowd-kochmodus')
         );
-        echo '<p class="description">' . esc_html__('Hex (#rrggbb) or rgb()/rgba(). Leave empty for the widget default.', 'kochmodus') . '</p>';
+        echo '<p class="description">' . esc_html__('Hex (#rrggbb) or rgb()/rgba(). Leave empty for the widget default.', 'flowd-kochmodus') . '</p>';
     }
 
     /**
@@ -140,7 +140,7 @@ final class SettingsPageRenderer
             add_settings_error(
                 'kochmodus_settings',
                 'invalid_input',
-                __('Invalid settings data.', 'kochmodus')
+                __('Invalid settings data.', 'flowd-kochmodus')
             );
             return $this->getCurrentOptionOrDefault();
         }
@@ -156,7 +156,7 @@ final class SettingsPageRenderer
                 'validation_error',
                 sprintf(
                     /* translators: %s: validation error message. */
-                    __('Access Token: %s', 'kochmodus'),
+                    __('Access Token: %s', 'flowd-kochmodus'),
                     $e->getMessage()
                 )
             );
@@ -187,7 +187,7 @@ final class SettingsPageRenderer
                     'validation_error',
                     sprintf(
                         /* translators: 1: settings field label, 2: validation error message. */
-                        __('%1$s: %2$s', 'kochmodus'),
+                        __('%1$s: %2$s', 'flowd-kochmodus'),
                         $label,
                         $e->getMessage()
                     )
@@ -203,9 +203,9 @@ final class SettingsPageRenderer
     private function colorFields(): array
     {
         return [
-            'background_color' => __('Background Color', 'kochmodus'),
-            'hover_background_color' => __('Hover Background Color', 'kochmodus'),
-            'color' => __('Label Color', 'kochmodus'),
+            'background_color' => __('Background Color', 'flowd-kochmodus'),
+            'hover_background_color' => __('Hover Background Color', 'flowd-kochmodus'),
+            'color' => __('Label Color', 'flowd-kochmodus'),
         ];
     }
 
