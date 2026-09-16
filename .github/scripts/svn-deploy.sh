@@ -6,12 +6,15 @@
 #
 #   1. sync the working tree (minus .distignore) into trunk/    -> commit
 #   2. sync the wp.org assets (icons, screenshots) into assets/ -> commit
-#   3. copy trunk to tags/<VERSION>                             -> commit
-#   4. build an installable zip from trunk/
+#   3. build an installable zip from trunk/
+#   4. copy trunk to tags/<VERSION>                             -> commit
 #
-# The tag is created last: an existing tags/<VERSION> therefore means the
-# version is fully released, and the script refuses to run again for it.
 # Everything before the tag is idempotent, so a failed run can be retried.
+# The tag is created last and marks the version as released. If tags/<VERSION>
+# already exists, the script resumes instead of deploying again: it verifies
+# that the tag matches the working tree and only rebuilds the zip, so the steps
+# after SVN (GitHub release) can be retried. A tag whose content differs from
+# the working tree is an error: bump the version and release again.
 #
 # Git is the development repository, SVN only receives releases. The SVN
 # commit messages are defined in the "Commit messages" block below and are
@@ -26,7 +29,7 @@
 #   WORKSPACE      plugin source directory         (default: $GITHUB_WORKSPACE or cwd)
 #   ASSETS_DIR     wp.org assets directory inside WORKSPACE       (default: assets)
 #   SVN_URL        (default: https://plugins.svn.wordpress.org/<SLUG>)
-#   SVN_DIR        SVN working copy location                (default: temp directory)
+#   SVN_DIR        SVN working copy location, outside WORKSPACE (default: temp directory)
 #   ZIP_PATH       output zip, empty disables   (default: <WORKSPACE>/dist/<SLUG>.zip)
 #   SOURCE_URL     GitHub release URL, appended to the trunk commit message (optional)
 #
@@ -97,6 +100,17 @@ committed_revision() {
     echo "${revision:-?}"
 }
 
+# sync_plugin <wc-path> [rsync options...]: mirrors the working tree minus
+# .distignore into a working copy directory, keeping its .svn metadata.
+sync_plugin() {
+    local path="$1"
+    shift
+    rsync -rc --delete --delete-excluded \
+        --exclude='/.svn' \
+        --exclude-from="${WORKSPACE}/.distignore" \
+        "$@" "${WORKSPACE}/" "${path}/"
+}
+
 # register_changes <wc-path>: schedule new files for addition and missing files
 # for deletion so that "svn status" reflects the synced tree.
 register_changes() {
@@ -154,6 +168,23 @@ commit_if_changed() {
     SUMMARY+=("${label}: committed r${revision}")
 }
 
+# build_zip <wc-path>: installable zip with the top-level folder <SLUG>/, as
+# wp.org ships it. No-op when ZIP_PATH is empty.
+build_zip() {
+    local source="$1" stage
+
+    [[ -n "${ZIP_PATH}" ]] || return 0
+
+    log "Building ${ZIP_PATH} from ${source}/"
+    stage="$(mktemp -d)"
+    ln -s "${source}" "${stage}/${SLUG}"
+    mkdir -p "$(dirname "${ZIP_PATH}")"
+    (cd "${stage}" && zip -rq "${stage}/${SLUG}.zip" "${SLUG}" -x '*/.svn/*')
+    mv -f "${stage}/${SLUG}.zip" "${ZIP_PATH}"
+    echo "zip: $(du -h "${ZIP_PATH}" | cut -f1)"
+    SUMMARY+=("zip: ${ZIP_PATH}")
+}
+
 # ---------------------------------------------------------------------------
 # Preflight
 # ---------------------------------------------------------------------------
@@ -162,13 +193,38 @@ log "Preflight: ${SLUG} ${VERSION}$([[ "${DRY_RUN}" == 1 ]] && echo ' (dry run)'
 
 [[ "${VERSION}" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || die "VERSION '${VERSION}' is not MAJOR.MINOR.PATCH"
 [[ -d "${WORKSPACE}" ]] || die "WORKSPACE '${WORKSPACE}' is not a directory"
-WORKSPACE="$(cd "${WORKSPACE}" && pwd)"
+WORKSPACE="$(cd "${WORKSPACE}" && pwd -P)"
 [[ -f "${WORKSPACE}/.distignore" ]] || die "${WORKSPACE}/.distignore not found"
 [[ -f "${WORKSPACE}/readme.txt" ]] || die "${WORKSPACE}/readme.txt not found"
 
-case "${SVN_DIR}/" in
-    "${WORKSPACE}"/*) die "SVN_DIR '${SVN_DIR}' must not be inside WORKSPACE" ;;
-esac
+# Resolve both to physical absolute paths before comparing, otherwise a
+# relative SVN_DIR (e.g. tmp/svn) inside the source tree would slip through
+# and rsync would copy the checkout into its own trunk.
+#
+# physical_path <path>: absolute path with symlinks and ".." resolved as far
+# as the path exists; components that do not exist yet are appended as given.
+physical_path() {
+    local path="$1" rest=""
+    [[ "${path}" == /* ]] || path="$(pwd -P)/${path}"
+    while [[ ! -d "${path}" ]]; do
+        rest="/$(basename "${path}")${rest}"
+        path="$(dirname "${path}")"
+    done
+    echo "$(cd "${path}" && pwd -P)${rest}"
+}
+check_svn_dir() {
+    case "${SVN_DIR}/" in
+        "${WORKSPACE}"/*) die "SVN_DIR '${SVN_DIR}' must not be inside WORKSPACE '${WORKSPACE}'" ;;
+    esac
+    case "${WORKSPACE}/" in
+        "${SVN_DIR}"/*) die "WORKSPACE '${WORKSPACE}' must not be inside SVN_DIR '${SVN_DIR}'" ;;
+    esac
+}
+SVN_DIR="$(physical_path "${SVN_DIR}")"
+check_svn_dir
+mkdir -p "${SVN_DIR}" || die "cannot create SVN_DIR '${SVN_DIR}'"
+SVN_DIR="$(cd "${SVN_DIR}" && pwd -P)"
+check_svn_dir
 case "${ZIP_PATH}" in
     "" | /*) ;;
     *) ZIP_PATH="${PWD}/${ZIP_PATH}" ;;
@@ -187,81 +243,106 @@ CHANGELOG="$(bash "${SCRIPT_DIR}/changelog-entry.sh" "${VERSION}" "${WORKSPACE}/
 [[ -n "${CHANGELOG}" ]] || die "readme.txt has no changelog entry '= ${VERSION} ='"
 
 svn_cmd info "${SVN_URL}" > /dev/null 2>&1 || die "cannot reach ${SVN_URL}"
+RESUME=0
 if svn_cmd info "${SVN_URL}/tags/${VERSION}" > /dev/null 2>&1; then
-    die "tags/${VERSION} already exists in ${SVN_URL}: version ${VERSION} is already released. Bump the version and push a new tag."
+    RESUME=1
+    echo "tags/${VERSION} already exists in ${SVN_URL}: resuming, SVN will not be changed"
 fi
 
 SUMMARY=()
 
 # ---------------------------------------------------------------------------
-# Checkout (root with immediate children only, trunk and assets in full)
+# Checkout (root with immediate children only, the needed directories in full)
 # ---------------------------------------------------------------------------
 
 log "Checking out ${SVN_URL} into ${SVN_DIR}"
 svn_cmd checkout -q --depth immediates "${SVN_URL}" "${SVN_DIR}"
-svn_cmd update -q --set-depth infinity "${SVN_DIR}/trunk" "${SVN_DIR}/assets"
+if [[ "${RESUME}" == 1 ]]; then
+    svn_cmd update -q --set-depth infinity "${SVN_DIR}/tags/${VERSION}"
+else
+    svn_cmd update -q --set-depth infinity "${SVN_DIR}/trunk" "${SVN_DIR}/assets"
+fi
 cd "${SVN_DIR}"
+
+# ---------------------------------------------------------------------------
+# Resume: tags/<VERSION> exists, verify it and rebuild the zip only
+# ---------------------------------------------------------------------------
+
+if [[ "${RESUME}" == 1 ]]; then
+    log "Verifying tags/${VERSION} against the working tree"
+    # Itemized lines starting with "." are files that would not be transferred
+    # (only attributes such as the modification time differ); everything else
+    # (">f" changed or new file, "cd" new directory, "*deleting") is a difference.
+    differences="$(sync_plugin "tags/${VERSION}" --dry-run --itemize-changes | awk '!/^\./')"
+    if [[ -n "${differences}" ]]; then
+        echo "tags/${VERSION}: differs from the working tree"
+        while IFS= read -r line; do echo "    ${line}"; done <<< "${differences}"
+        die "tags/${VERSION} in ${SVN_URL} does not match this source: version ${VERSION} is already released with different content. Bump the version and push a new tag."
+    fi
+    echo "tags/${VERSION}: matches the working tree"
+    SUMMARY+=("trunk: skipped, tags/${VERSION} already released")
+    SUMMARY+=("assets: skipped, tags/${VERSION} already released")
+    SUMMARY+=("tag: tags/${VERSION} exists and matches the working tree")
+
+    build_zip "${SVN_DIR}/tags/${VERSION}"
+fi
 
 # ---------------------------------------------------------------------------
 # 1. trunk
 # ---------------------------------------------------------------------------
 
-log "Syncing working tree into trunk/"
-rsync -rc --delete --delete-excluded \
-    --exclude='/.svn' \
-    --exclude-from="${WORKSPACE}/.distignore" \
-    "${WORKSPACE}/" trunk/
-register_changes trunk
-commit_if_changed trunk trunk_message trunk
+if [[ "${RESUME}" != 1 ]]; then
+    log "Syncing working tree into trunk/"
+    sync_plugin trunk
+    register_changes trunk
+    commit_if_changed trunk trunk_message trunk
+fi
 
 # ---------------------------------------------------------------------------
 # 2. assets
 # ---------------------------------------------------------------------------
 
-if [[ -d "${WORKSPACE}/${ASSETS_DIR}" ]]; then
-    log "Syncing ${ASSETS_DIR}/ into assets/"
-    rsync -rc --delete --exclude='.*' "${WORKSPACE}/${ASSETS_DIR}/" assets/
-    register_changes assets
-    set_mime_types assets
-    commit_if_changed assets assets_message assets
-else
-    log "No ${ASSETS_DIR}/ directory, skipping wp.org assets"
-    SUMMARY+=("assets: skipped, no ${ASSETS_DIR}/ directory")
+if [[ "${RESUME}" != 1 ]]; then
+    if [[ -d "${WORKSPACE}/${ASSETS_DIR}" ]]; then
+        log "Syncing ${ASSETS_DIR}/ into assets/"
+        rsync -rc --delete --exclude='.*' "${WORKSPACE}/${ASSETS_DIR}/" assets/
+        register_changes assets
+        set_mime_types assets
+        commit_if_changed assets assets_message assets
+    else
+        log "No ${ASSETS_DIR}/ directory, skipping wp.org assets"
+        SUMMARY+=("assets: skipped, no ${ASSETS_DIR}/ directory")
+    fi
 fi
 
 # ---------------------------------------------------------------------------
-# 3. tags/<VERSION> (server-side copy of trunk HEAD, marks the release as done)
+# 3. installable zip (from trunk, before the irreversible tag)
 # ---------------------------------------------------------------------------
 
-log "Tagging trunk as tags/${VERSION}"
-message_file="$(mktemp)"
-tag_message > "${message_file}"
-echo "tag: commit message"
-sed 's/^/    | /' "${message_file}"
-
-if [[ "${DRY_RUN}" == 1 ]]; then
-    echo "tag: dry run, would run: svn copy ${SVN_URL}/trunk ${SVN_URL}/tags/${VERSION}"
-    SUMMARY+=("tag: dry run, tags/${VERSION} not created")
-else
-    output="$(svn_auth copy "${SVN_URL}/trunk" "${SVN_URL}/tags/${VERSION}" -F "${message_file}")"
-    revision="$(committed_revision "${output}")"
-    echo "tag: created tags/${VERSION} r${revision}"
-    SUMMARY+=("tag: created tags/${VERSION} r${revision}")
+if [[ "${RESUME}" != 1 ]]; then
+    build_zip "${SVN_DIR}/trunk"
 fi
 
 # ---------------------------------------------------------------------------
-# 4. installable zip (top-level folder <SLUG>/, as wp.org ships it)
+# 4. tags/<VERSION> (server-side copy of trunk HEAD, marks the release as done)
 # ---------------------------------------------------------------------------
 
-if [[ -n "${ZIP_PATH}" ]]; then
-    log "Building ${ZIP_PATH}"
-    stage="$(mktemp -d)"
-    ln -s "${SVN_DIR}/trunk" "${stage}/${SLUG}"
-    mkdir -p "$(dirname "${ZIP_PATH}")"
-    (cd "${stage}" && zip -rq "${stage}/${SLUG}.zip" "${SLUG}" -x '*/.svn/*')
-    mv -f "${stage}/${SLUG}.zip" "${ZIP_PATH}"
-    echo "zip: $(du -h "${ZIP_PATH}" | cut -f1)"
-    SUMMARY+=("zip: ${ZIP_PATH}")
+if [[ "${RESUME}" != 1 ]]; then
+    log "Tagging trunk as tags/${VERSION}"
+    message_file="$(mktemp)"
+    tag_message > "${message_file}"
+    echo "tag: commit message"
+    sed 's/^/    | /' "${message_file}"
+
+    if [[ "${DRY_RUN}" == 1 ]]; then
+        echo "tag: dry run, would run: svn copy ${SVN_URL}/trunk ${SVN_URL}/tags/${VERSION}"
+        SUMMARY+=("tag: dry run, tags/${VERSION} not created")
+    else
+        output="$(svn_auth copy "${SVN_URL}/trunk" "${SVN_URL}/tags/${VERSION}" -F "${message_file}")"
+        revision="$(committed_revision "${output}")"
+        echo "tag: created tags/${VERSION} r${revision}"
+        SUMMARY+=("tag: created tags/${VERSION} r${revision}")
+    fi
 fi
 
 # ---------------------------------------------------------------------------

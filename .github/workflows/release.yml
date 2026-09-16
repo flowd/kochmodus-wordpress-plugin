@@ -7,6 +7,13 @@ name: Release
 # Pre-release tags such as 1.1.0-beta.1 do not match the pattern and are not
 # deployed.
 #
+# The tag must point to a commit on the default branch (main), otherwise the
+# run fails before anything is deployed.
+#
+# Re-running a failed release for a version that already exists as
+# tags/X.Y.Z in SVN does not touch SVN: the tag is verified against the
+# source, the zip is rebuilt and the GitHub release is created or completed.
+#
 # Running the workflow manually (workflow_dispatch) is always a dry run: build,
 # validate, show the SVN changes and upload the zip as an artifact. Nothing is
 # committed to SVN and no GitHub release is created.
@@ -40,6 +47,20 @@ jobs:
       contents: write
     steps:
       - uses: actions/checkout@v6
+        with:
+          # Full history so that the tag can be checked against main.
+          fetch-depth: 0
+
+      # A tag on an unmerged branch would publish code that is not on main.
+      - name: Verify tag is on the default branch
+        if: github.ref_type == 'tag'
+        env:
+          DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
+        run: |
+          if ! git merge-base --is-ancestor HEAD "origin/${DEFAULT_BRANCH}"; then
+            echo "::error::Tag ${GITHUB_REF_NAME} points to $(git rev-parse --short HEAD), which is not on ${DEFAULT_BRANCH}. Merge first, then tag a commit on ${DEFAULT_BRANCH}."
+            exit 1
+          fi
 
       - name: Verify version declarations
         id: version

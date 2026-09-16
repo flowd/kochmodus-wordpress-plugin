@@ -35,6 +35,6 @@ DDD layered architecture with PSR-4 autoloading (namespace: `Flowd\KochmodusWord
 - HTML escaping injected as callable to keep Domain pure
 
 ## Releasing
-- Git is the dev repo; WordPress.org SVN only receives releases via `.github/workflows/release.yml` (trigger: pushed semver tag `X.Y.Z`, creates the GitHub release itself; manual run = dry run)
+- Git is the dev repo; WordPress.org SVN only receives releases via `.github/workflows/release.yml` (trigger: pushed semver tag `X.Y.Z` on `main`, creates the GitHub release itself; manual run = dry run; existing SVN tag = verify + rebuild zip only, no SVN changes)
 - Version must agree in plugin header, `KOCHMODUS_VERSION`, `readme.txt` (Stable tag + changelog entry), `package.json`, `block.json` — verified by `.github/scripts/check-version.sh`
 - SVN commit messages live in `.github/scripts/svn-deploy.sh`; git keeps Conventional Commits (`.gitmessage`)
