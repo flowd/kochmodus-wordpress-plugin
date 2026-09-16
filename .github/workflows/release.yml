@@ -1,18 +1,23 @@
 name: Release
 
 # Git is the development repository; the WordPress.org SVN repository only
-# receives releases. Publishing a GitHub release (tag vX.Y.Z) runs the full CI,
-# builds the plugin and deploys it to SVN: trunk, tags/X.Y.Z and assets.
+# receives releases. Pushing a semantic version tag (1.0.1, optionally v1.0.1)
+# runs the full CI, builds the plugin, deploys it to SVN (trunk, assets,
+# tags/1.0.1) and creates the GitHub release with the changelog and the zip.
+# Pre-release tags such as 1.1.0-beta.1 do not match the pattern and are not
+# deployed.
 #
 # Running the workflow manually (workflow_dispatch) is always a dry run: build,
 # validate, show the SVN changes and upload the zip as an artifact. Nothing is
-# committed to SVN.
+# committed to SVN and no GitHub release is created.
 #
 # Required repository secrets: SVN_USERNAME, SVN_PASSWORD (wp.org SVN password).
 
 on:
-  release:
-    types: [published]
+  push:
+    tags:
+      - '[0-9]+.[0-9]+.[0-9]+'
+      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
 concurrency:
@@ -25,7 +30,6 @@ env:
 jobs:
   quality:
     name: Quality gate
-    if: ${{ !github.event.release.prerelease }}
     uses: ./.github/workflows/ci.yml
 
   deploy:
@@ -42,7 +46,7 @@ jobs:
         id: version
         run: |
           expected=""
-          if [[ "$GITHUB_EVENT_NAME" == "release" ]]; then
+          if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
             expected="${GITHUB_REF_NAME#v}"
           fi
           version="$(bash .github/scripts/check-version.sh "$expected")"
@@ -82,23 +86,33 @@ jobs:
       - name: Deploy to WordPress.org SVN
         env:
           VERSION: ${{ steps.version.outputs.version }}
-          DRY_RUN: ${{ github.event_name == 'release' && '0' || '1' }}
+          DRY_RUN: ${{ github.event_name == 'push' && '0' || '1' }}
           SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
           SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
-          SOURCE_URL: ${{ github.event.release.html_url }}
+          SOURCE_URL: ${{ github.event_name == 'push' && format('{0}/{1}/releases/tag/{2}', github.server_url, github.repository, github.ref_name) || '' }}
           ZIP_PATH: ${{ github.workspace }}/dist/${{ env.SLUG }}.zip
         run: bash .github/scripts/svn-deploy.sh
 
-      - name: Attach zip to GitHub release
-        if: github.event_name == 'release'
-        env:
-          GH_TOKEN: ${{ github.token }}
-        run: gh release upload "$GITHUB_REF_NAME" "dist/${SLUG}.zip" --clobber
-
-      - name: Upload zip as workflow artifact (dry run)
-        if: github.event_name != 'release'
+      # Kept for every run so the zip can be recovered if a later step fails.
+      - name: Upload zip as workflow artifact
+        if: ${{ !cancelled() }}
         uses: actions/upload-artifact@v7
         with:
           name: ${{ env.SLUG }}-${{ steps.version.outputs.version }}
           path: dist/${{ env.SLUG }}.zip
-          if-no-files-found: error
+          if-no-files-found: ignore
+          overwrite: true
+
+      - name: Create GitHub release
+        if: github.event_name == 'push'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TAG: ${{ github.ref_name }}
+          VERSION: ${{ steps.version.outputs.version }}
+        run: |
+          bash .github/scripts/changelog-entry.sh "$VERSION" > "$RUNNER_TEMP/release-notes.md"
+          if gh release view "$TAG" > /dev/null 2>&1; then
+            gh release upload "$TAG" "dist/${SLUG}.zip" --clobber
+          else
+            gh release create "$TAG" "dist/${SLUG}.zip" --verify-tag --title "$VERSION" --notes-file "$RUNNER_TEMP/release-notes.md"
+          fi

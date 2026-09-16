@@ -5,9 +5,13 @@
 # https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/
 #
 #   1. sync the working tree (minus .distignore) into trunk/    -> commit
-#   2. copy trunk to tags/<VERSION>                             -> commit
-#   3. sync the wp.org assets (icons, screenshots) into assets/ -> commit
+#   2. sync the wp.org assets (icons, screenshots) into assets/ -> commit
+#   3. copy trunk to tags/<VERSION>                             -> commit
 #   4. build an installable zip from trunk/
+#
+# The tag is created last: an existing tags/<VERSION> therefore means the
+# version is fully released, and the script refuses to run again for it.
+# Everything before the tag is idempotent, so a failed run can be retried.
 #
 # Git is the development repository, SVN only receives releases. The SVN
 # commit messages are defined in the "Commit messages" block below and are
@@ -29,6 +33,8 @@
 # Dry run against the live repository (read-only, no credentials needed):
 #   SLUG=flowd-kochmodus VERSION=1.0.0 DRY_RUN=1 bash .github/scripts/svn-deploy.sh
 set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 SLUG="${SLUG:?SLUG is required}"
 VERSION="${VERSION:?VERSION is required}"
@@ -57,14 +63,14 @@ trunk_message() {
     fi
 }
 
-# Tag creation (svn copy trunk -> tags/<VERSION>).
-tag_message() {
-    echo "Tagging version ${VERSION}"
-}
-
 # wp.org assets (icons, screenshots, banners).
 assets_message() {
     echo "Update assets for version ${VERSION}"
+}
+
+# Tag creation (svn copy trunk -> tags/<VERSION>).
+tag_message() {
+    echo "Tagging version ${VERSION}"
 }
 
 # ---------------------------------------------------------------------------
@@ -89,27 +95,6 @@ committed_revision() {
     local revision
     revision="$(sed -nE 's/^Committed revision ([0-9]+)\.$/\1/p' <<< "$1")"
     echo "${revision:-?}"
-}
-
-# changelog_entry: the "= VERSION =" section of readme.txt, without the heading
-# and without surrounding blank lines.
-changelog_entry() {
-    awk -v version="${VERSION}" '
-        {
-            line = $0
-            sub(/[[:space:]]+$/, "", line)
-        }
-        !found && line == "= " version " =" { found = 1; next }
-        found && (line ~ /^= .* =$/ || line ~ /^== /) { exit }
-        found { lines[++count] = line }
-        END {
-            first = 1
-            last = count
-            while (first <= last && lines[first] == "") first++
-            while (last >= first && lines[last] == "") last--
-            for (i = first; i <= last; i++) print lines[i]
-        }
-    ' "${WORKSPACE}/readme.txt"
 }
 
 # register_changes <wc-path>: schedule new files for addition and missing files
@@ -198,12 +183,12 @@ if [[ "${DRY_RUN}" != 1 && ( -z "${SVN_USERNAME}" || -z "${SVN_PASSWORD}" ) ]]; 
     die "SVN_USERNAME and SVN_PASSWORD are required (or set DRY_RUN=1)"
 fi
 
-CHANGELOG="$(changelog_entry)"
+CHANGELOG="$(bash "${SCRIPT_DIR}/changelog-entry.sh" "${VERSION}" "${WORKSPACE}/readme.txt")"
 [[ -n "${CHANGELOG}" ]] || die "readme.txt has no changelog entry '= ${VERSION} ='"
 
 svn_cmd info "${SVN_URL}" > /dev/null 2>&1 || die "cannot reach ${SVN_URL}"
 if svn_cmd info "${SVN_URL}/tags/${VERSION}" > /dev/null 2>&1; then
-    die "tags/${VERSION} already exists in ${SVN_URL}; bump the version instead of re-releasing"
+    die "tags/${VERSION} already exists in ${SVN_URL}: version ${VERSION} is already released. Bump the version and push a new tag."
 fi
 
 SUMMARY=()
@@ -230,7 +215,22 @@ register_changes trunk
 commit_if_changed trunk trunk_message trunk
 
 # ---------------------------------------------------------------------------
-# 2. tags/<VERSION> (server-side copy of trunk HEAD)
+# 2. assets
+# ---------------------------------------------------------------------------
+
+if [[ -d "${WORKSPACE}/${ASSETS_DIR}" ]]; then
+    log "Syncing ${ASSETS_DIR}/ into assets/"
+    rsync -rc --delete --exclude='.*' "${WORKSPACE}/${ASSETS_DIR}/" assets/
+    register_changes assets
+    set_mime_types assets
+    commit_if_changed assets assets_message assets
+else
+    log "No ${ASSETS_DIR}/ directory, skipping wp.org assets"
+    SUMMARY+=("assets: skipped, no ${ASSETS_DIR}/ directory")
+fi
+
+# ---------------------------------------------------------------------------
+# 3. tags/<VERSION> (server-side copy of trunk HEAD, marks the release as done)
 # ---------------------------------------------------------------------------
 
 log "Tagging trunk as tags/${VERSION}"
@@ -247,21 +247,6 @@ else
     revision="$(committed_revision "${output}")"
     echo "tag: created tags/${VERSION} r${revision}"
     SUMMARY+=("tag: created tags/${VERSION} r${revision}")
-fi
-
-# ---------------------------------------------------------------------------
-# 3. assets
-# ---------------------------------------------------------------------------
-
-if [[ -d "${WORKSPACE}/${ASSETS_DIR}" ]]; then
-    log "Syncing ${ASSETS_DIR}/ into assets/"
-    rsync -rc --delete --exclude='.*' "${WORKSPACE}/${ASSETS_DIR}/" assets/
-    register_changes assets
-    set_mime_types assets
-    commit_if_changed assets assets_message assets
-else
-    log "No ${ASSETS_DIR}/ directory, skipping wp.org assets"
-    SUMMARY+=("assets: skipped, no ${ASSETS_DIR}/ directory")
 fi
 
 # ---------------------------------------------------------------------------
