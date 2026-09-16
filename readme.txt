@@ -3,7 +3,7 @@ Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.0.0
+Stable tag: 1.0.1
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -105,6 +105,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 
 == Changelog ==
 
+= 1.0.1 =
+* Updated the block build toolchain (@wordpress/scripts 35) and rebuilt the Gutenberg block.
+
 = 1.0.0 =
 * Initial release.
 * Gutenberg block **Kochmodus Button** with label, recipe URI and color controls.
@@ -113,6 +116,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 * Conditional widget script loading in `wp_footer`.
 
 == Upgrade Notice ==
+
+= 1.0.1 =
+Maintenance release: updated block build toolchain. No functional changes.
 
 = 1.0.0 =
 Initial release of the Kochmodus plugin.
