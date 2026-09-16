@@ -172,7 +172,7 @@ Git is the development repository; the [WordPress.org SVN repository](https://pl
    git push origin 1.0.1
    ```
 
-   Only tags of the form `X.Y.Z` (or `vX.Y.Z`) trigger the workflow; pre-release tags such as `1.1.0-beta.1` do not.
+   Only tags of the form `X.Y.Z` (no leading `v`) trigger the workflow; pre-release tags such as `1.1.0-beta.1` do not.
 3. The workflow runs the full CI, verifies that the tag matches the version declarations, builds the plugin and deploys it to SVN as described in the [WordPress.org SVN guide](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/): trunk is updated, the wp.org `assets/` are synced, and trunk is copied to `tags/X.Y.Z`. Finally a GitHub release is created for the tag with the changelog entry as notes and the installable zip attached.
 
 The SVN commit messages are defined in [`.github/scripts/svn-deploy.sh`](.github/scripts/svn-deploy.sh) and are independent of the Conventional Commits used in git. Running the workflow manually (*Run workflow*) performs a dry run: everything is built and validated and the SVN changes are shown, but nothing is committed and no GitHub release is created. The same dry run works locally with `svn` installed:

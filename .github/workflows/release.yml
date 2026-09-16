@@ -1,7 +1,7 @@
 name: Release
 
 # Git is the development repository; the WordPress.org SVN repository only
-# receives releases. Pushing a semantic version tag (1.0.1, optionally v1.0.1)
+# receives releases. Pushing a semantic version tag (1.0.1, no leading v)
 # runs the full CI, builds the plugin, deploys it to SVN (trunk, assets,
 # tags/1.0.1) and creates the GitHub release with the changelog and the zip.
 # Pre-release tags such as 1.1.0-beta.1 do not match the pattern and are not
@@ -17,7 +17,6 @@ on:
   push:
     tags:
       - '[0-9]+.[0-9]+.[0-9]+'
-      - 'v[0-9]+.[0-9]+.[0-9]+'
   workflow_dispatch:
 
 concurrency:
@@ -47,7 +46,7 @@ jobs:
         run: |
           expected=""
           if [[ "$GITHUB_REF_TYPE" == "tag" ]]; then
-            expected="${GITHUB_REF_NAME#v}"
+            expected="$GITHUB_REF_NAME"
           fi
           version="$(bash .github/scripts/check-version.sh "$expected")"
           echo "version=$version" >> "$GITHUB_OUTPUT"
