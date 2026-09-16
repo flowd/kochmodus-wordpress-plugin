@@ -36,3 +36,11 @@
 # Hidden files anywhere in the tree (wp.org forbids hidden files)
 .gitkeep
 .DS_Store
+
+# Local-only artifacts (see .gitignore)
+/dist
+/.claude
+/.vscode
+/.history
+/.project
+/.quellen

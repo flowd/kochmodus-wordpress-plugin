@@ -33,3 +33,8 @@ DDD layered architecture with PSR-4 autoloading (namespace: `Flowd\KochmodusWord
 - Button rendering shared between Shortcode and Gutenberg Block via `RenderButtonService`
 - Widget script conditionally loaded via flag-based `ScriptEnqueuer` in `wp_footer`
 - HTML escaping injected as callable to keep Domain pure
+
+## Releasing
+- Git is the dev repo; WordPress.org SVN only receives releases via `.github/workflows/release.yml` (trigger: published GitHub release with tag `vX.Y.Z`; manual run = dry run)
+- Version must agree in plugin header, `KOCHMODUS_VERSION`, `readme.txt` (Stable tag + changelog entry), `package.json`, `block.json` — verified by `.github/scripts/check-version.sh`
+- SVN commit messages live in `.github/scripts/svn-deploy.sh`; git keeps Conventional Commits (`.gitmessage`)

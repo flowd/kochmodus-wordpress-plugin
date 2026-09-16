@@ -160,6 +160,22 @@ Commits follow the [Conventional Commits](https://www.conventionalcommits.org/) 
 git config commit.template .gitmessage
 ```
 
+### Releasing
+
+Git is the development repository; the [WordPress.org SVN repository](https://plugins.svn.wordpress.org/flowd-kochmodus/) only receives releases. The [Release workflow](.github/workflows/release.yml) deploys automatically when a GitHub release is published:
+
+1. Bump the version (following [Semantic Versioning](https://semver.org/)) in `flowd-kochmodus.php` (header and `KOCHMODUS_VERSION`), `readme.txt` (`Stable tag`), `package.json` and `blocks/kochmodus-button/block.json`, and add a `= X.Y.Z =` entry to the changelog in `readme.txt`. `bash .github/scripts/check-version.sh` verifies that all of them agree.
+2. Merge to `main` and publish a GitHub release with the tag `vX.Y.Z` (pre-releases are not deployed).
+3. The workflow runs the full CI, builds the plugin and deploys it to SVN as described in the [WordPress.org SVN guide](https://developer.wordpress.org/plugins/wordpress-org/how-to-use-subversion/): trunk is updated, copied to `tags/X.Y.Z`, and the wp.org `assets/` are synced. The installable zip is attached to the GitHub release.
+
+The SVN commit messages are defined in [`.github/scripts/svn-deploy.sh`](.github/scripts/svn-deploy.sh) and are independent of the Conventional Commits used in git. Running the workflow manually (*Run workflow*) performs a dry run: everything is built and validated and the SVN changes are shown, but nothing is committed. The same dry run works locally with `svn` installed:
+
+```bash
+SLUG=flowd-kochmodus VERSION=1.0.0 DRY_RUN=1 bash .github/scripts/svn-deploy.sh
+```
+
+Required repository secrets: `SVN_USERNAME` (WordPress.org username) and `SVN_PASSWORD` (the WordPress.org [SVN password](https://profiles.wordpress.org/me/profile/edit/group/3/?screen=svn-password), not the account password).
+
 ## License
 
 GPL-2.0-or-later
