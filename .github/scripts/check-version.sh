@@ -49,8 +49,10 @@ check "${README_FILE} Stable tag"        "$stable"
 check "${PACKAGE_FILE} version"          "$package"
 check "${BLOCK_FILE} version"            "$block"
 
-if ! grep -qE "^= ${expected//./\\.} =[[:space:]]*$" "$README_FILE"; then
-    errors+=("${README_FILE}: no changelog entry '= ${expected} ='")
+# Only the "== Changelog ==" section counts; "== Upgrade Notice ==" repeats
+# the version headings.
+if [[ -z "$(bash .github/scripts/changelog-entry.sh "$expected" "$README_FILE")" ]]; then
+    errors+=("${README_FILE}: no changelog entry '= ${expected} =' in the '== Changelog ==' section")
 fi
 
 if (( ${#errors[@]} > 0 )); then
