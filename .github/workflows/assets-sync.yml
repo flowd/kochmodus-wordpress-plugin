@@ -1,4 +1,4 @@
-name: Sync assets
+name: Assets sync - wp.org
 
 # WordPress.org page assets (banners, icons, screenshots, blueprints) live only
 # in SVN /assets, never in trunk or a tag, and wp.org re-imports them on any
