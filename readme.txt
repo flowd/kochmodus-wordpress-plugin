@@ -3,7 +3,7 @@ Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.0.1
+Stable tag: 1.0.2
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -105,6 +105,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 
 == Changelog ==
 
+= 1.0.2 =
+* Added animated plugin banners for the WordPress.org listing. No functional changes.
+
 = 1.0.1 =
 * Updated the block build toolchain (@wordpress/scripts 35) and rebuilt the Gutenberg block.
 
@@ -116,6 +119,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 * Conditional widget script loading in `wp_footer`.
 
 == Upgrade Notice ==
+
+= 1.0.2 =
+Maintenance release: new WordPress.org listing banners. No functional changes.
 
 = 1.0.1 =
 Maintenance release: updated block build toolchain. No functional changes.
