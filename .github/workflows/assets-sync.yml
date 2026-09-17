@@ -1,0 +1,65 @@
+name: Sync assets
+
+# WordPress.org page assets (banners, icons, screenshots, blueprints) live only
+# in SVN /assets, never in trunk or a tag, and wp.org re-imports them on any
+# commit to the plugin's SVN repository. Changing a banner is therefore not a
+# release and needs no version bump, which is why this is separate from
+# release.yml: that workflow only runs on a semver tag and also rebuilds trunk.
+#
+# Pushing a change under assets/ to the default branch syncs it to SVN. Running
+# the workflow manually defaults to a dry run: validate, show what would change
+# and commit nothing. Set dry_run to false to sync from a manual run.
+#
+# Before touching SVN the assets are validated against the wp.org import rules
+# (see .github/scripts/svn-assets.sh). wp.org skips oversize, zero-byte and
+# misnamed assets silently, and a skipped file is still reachable over its
+# ps.w.org URL, so the failure is invisible until the plugin page renders
+# without it. The script turns that into a hard error.
+#
+# Required repository secrets: SVN_USERNAME, SVN_PASSWORD (wp.org SVN password).
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'assets/**'
+      - '.github/workflows/assets-sync.yml'
+      - '.github/scripts/svn-assets.sh'
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run: validate and show the changes without committing'
+        type: boolean
+        default: true
+
+# Shared with release.yml so that an assets sync and a release never write to
+# the SVN repository at the same time.
+concurrency:
+  group: wordpress-org-release
+  cancel-in-progress: false
+
+env:
+  SLUG: flowd-kochmodus
+
+jobs:
+  sync:
+    name: Sync assets to WordPress.org SVN
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v6
+
+      - name: Install Subversion
+        run: command -v svn > /dev/null || (sudo apt-get update -qq && sudo apt-get install -y -qq subversion)
+
+      - name: Sync assets to SVN
+        env:
+          DRY_RUN: ${{ (github.event_name == 'push' || inputs.dry_run == false) && '0' || '1' }}
+          SVN_USERNAME: ${{ secrets.SVN_USERNAME }}
+          SVN_PASSWORD: ${{ secrets.SVN_PASSWORD }}
+          MESSAGE: |
+            Update plugin page assets
+
+            Source: ${{ github.server_url }}/${{ github.repository }}/commit/${{ github.sha }}
+        run: bash .github/scripts/svn-assets.sh
