@@ -1,6 +1,6 @@
 {
     "name": "kochmodus-wordpress-plugin",
-    "version": "1.0.3",
+    "version": "1.0.4",
     "private": true,
     "description": "Kochmodus WordPress plugin Gutenberg blocks",
     "scripts": {

@@ -3,7 +3,7 @@
  * Plugin Name:       Flowd – Cooking Mode
  * Plugin URI:        https://kochmodus.de
  * Description:       Embeds the Kochmodus cooking mode widget on recipe pages.
- * Version:           1.0.3
+ * Version:           1.0.4
  * Requires at least: 6.0
  * Requires PHP:      7.4
  * Author:            Flowd GmbH
@@ -22,7 +22,7 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-define('KOCHMODUS_VERSION', '1.0.3');
+define('KOCHMODUS_VERSION', '1.0.4');
 define('KOCHMODUS_PLUGIN_FILE', __FILE__);
 define('KOCHMODUS_PLUGIN_DIR', plugin_dir_path(__FILE__));
 

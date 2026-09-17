@@ -2,6 +2,8 @@
 
 WordPress plugin to embed the [Kochmodus](https://kochmodus.de) cooking mode widget on recipe pages. Allows visitors to enter a gesture-controlled cooking mode for any recipe on your site.
 
+> **AI transparency:** The images used for this plugin (WordPress.org banner and icon) and parts of the documentation text were created with the help of generative AI tools. All content was reviewed and edited by the Flowd GmbH team before publication.
+
 ## Requirements
 
 - WordPress >= 6.0

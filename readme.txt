@@ -3,7 +3,7 @@ Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.0.3
+Stable tag: 1.0.4
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -11,6 +11,8 @@ License URI: https://www.gnu.org/licenses/gpl-2.0.html
 Embeds the Kochmodus cooking mode widget on recipe pages, letting visitors follow recipes hands-free via a gesture-controlled cooking mode.
 
 == Description ==
+
+**AI transparency:** The images used for this plugin (WordPress.org banner and icon) and parts of the text in this readme were created with the help of generative AI tools. All content was reviewed and edited by the Flowd GmbH team before publication.
 
 Kochmodus adds a button to your recipe pages that launches a gesture-controlled cooking mode. Visitors can step through recipes without touching their screen — ideal for cooking with messy hands.
 
@@ -105,6 +107,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 
 == Changelog ==
 
+= 1.0.4 =
+* Added an AI transparency notice: the WordPress.org banner and icon images and parts of the readme text were created with the help of generative AI tools. No functional changes.
+
 = 1.0.3 =
 * Reduced the size of the WordPress.org listing banners to stay under the 4 MB asset limit. No functional changes.
 
@@ -122,6 +127,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 * Conditional widget script loading in `wp_footer`.
 
 == Upgrade Notice ==
+
+= 1.0.4 =
+Documentation release: added an AI transparency notice. No functional changes.
 
 = 1.0.3 =
 Maintenance release: smaller WordPress.org listing banners. No functional changes.
