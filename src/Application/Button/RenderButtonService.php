@@ -4,6 +4,7 @@ declare(strict_types = 1);
 
 namespace Flowd\KochmodusWordpressPlugin\Application\Button;
 
+use Flowd\KochmodusWordpressPlugin\Domain\Button\Alignment;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\ButtonLabel;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\Color;
 use Flowd\KochmodusWordpressPlugin\Domain\Button\RecipeUri;
@@ -13,7 +14,14 @@ use InvalidArgumentException;
 final class RenderButtonService implements RenderButtonServiceInterface
 {
     /**
+     * The button sits in a block-level wrapper: the custom element itself is
+     * inline, so theme layouts that center or constrain block children (auto
+     * margins, max-width) would not position it. The wrapper takes part in
+     * those layouts like a paragraph, and an inline text-align on it places
+     * the button independently of the theme's stylesheet.
+     *
      * @param callable(string): string|null $escapeAttribute HTML attribute escaper (e.g. esc_attr)
+     * @param string|null $alignment left, center or right; anything else keeps the alignment the theme gives the wrapper
      */
     public function render(
         PluginSettings $settings,
@@ -22,7 +30,8 @@ final class RenderButtonService implements RenderButtonServiceInterface
         ?string $backgroundColor = null,
         ?string $hoverBackgroundColor = null,
         ?string $color = null,
-        ?callable $escapeAttribute = null
+        ?callable $escapeAttribute = null,
+        ?string $alignment = null
     ): string {
         $esc = $escapeAttribute ?? function (string $v): string {
             return htmlspecialchars($v, ENT_QUOTES, 'UTF-8');
@@ -38,13 +47,32 @@ final class RenderButtonService implements RenderButtonServiceInterface
 
         $styleAttr = $this->buildStyleAttribute($settings, $backgroundColor, $hoverBackgroundColor, $color, $esc);
 
+        $wrapperStyleAttr = '';
+        $validatedAlignment = $this->validateAlignment($alignment);
+        if ($validatedAlignment !== null) {
+            $wrapperStyleAttr = sprintf(' style="%s"', $esc('text-align: ' . $validatedAlignment));
+        }
+
         return sprintf(
-            '<kochmodus-button label="%s"%s%s data-kochmodus-access-token="%s"></kochmodus-button>',
+            '<div class="kochmodus-button-wrapper"%s><kochmodus-button label="%s"%s%s data-kochmodus-access-token="%s"></kochmodus-button></div>',
+            $wrapperStyleAttr,
             $esc($buttonLabel->value()),
             $recipeUriAttr,
             $styleAttr,
             $esc($settings->accessToken()->value())
         );
+    }
+
+    private function validateAlignment(?string $value): ?string
+    {
+        if ($value === null || $value === '') {
+            return null;
+        }
+        try {
+            return (new Alignment($value))->value();
+        } catch (InvalidArgumentException $e) {
+            return null;
+        }
     }
 
     private function resolveLabel(PluginSettings $settings, ?string $label): ButtonLabel

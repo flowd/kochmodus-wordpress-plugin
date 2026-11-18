@@ -366,6 +366,94 @@ final class RenderButtonServiceTest extends TestCase
         $this->assertStringNotContainsString('injection', $html);
     }
 
+    public function test_render_wraps_button_in_block_level_wrapper(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render($this->settings);
+
+        $this->assertStringStartsWith('<div class="kochmodus-button-wrapper"><kochmodus-button', $html);
+        $this->assertStringEndsWith('</kochmodus-button></div>', $html);
+    }
+
+    public function test_render_omits_text_align_when_no_alignment_set(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render($this->settings);
+
+        $this->assertStringNotContainsString('text-align', $html);
+    }
+
+    /** @dataProvider alignmentProvider */
+    public function test_render_sets_text_align_on_wrapper(string $alignment): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render($this->settings, null, null, null, null, null, null, $alignment);
+
+        $this->assertStringStartsWith(
+            '<div class="kochmodus-button-wrapper" style="text-align: ' . $alignment . '"><kochmodus-button',
+            $html
+        );
+    }
+
+    /** @return array<string, array{0: string}> */
+    public static function alignmentProvider(): array
+    {
+        return [
+            'left' => ['left'],
+            'center' => ['center'],
+            'right' => ['right'],
+        ];
+    }
+
+    public function test_render_ignores_invalid_alignment(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render(
+            $this->settings,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            'center; position: fixed'
+        );
+
+        $this->assertStringStartsWith('<div class="kochmodus-button-wrapper"><kochmodus-button', $html);
+        $this->assertStringNotContainsString('text-align', $html);
+        $this->assertStringNotContainsString('position', $html);
+    }
+
+    public function test_render_keeps_alignment_and_colors_on_separate_elements(): void
+    {
+        $service = new RenderButtonService();
+
+        $html = $service->render($this->settings, null, null, '#ff0000', null, null, null, 'center');
+
+        $this->assertStringContainsString('<div class="kochmodus-button-wrapper" style="text-align: center">', $html);
+        $this->assertStringContainsString('style="--kochmodus-button-background: #ff0000"', $html);
+    }
+
+    public function test_render_escapes_alignment_style(): void
+    {
+        /** @var list<string> $escaped */
+        $escaped = [];
+        $escaper = function (string $value) use (&$escaped): string {
+            $escaped[] = $value;
+            return $value;
+        };
+
+        $service = new RenderButtonService();
+
+        $service->render($this->settings, null, null, null, null, null, $escaper, 'right');
+
+        $this->assertContains('text-align: right', $escaped);
+    }
+
     public function test_render_escapes_all_attributes(): void
     {
         /** @var list<string> $escaped */

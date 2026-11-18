@@ -49,6 +49,7 @@ final class BlockRegistrar
         $backgroundColor = isset($attributes['backgroundColor']) && is_string($attributes['backgroundColor']) && $attributes['backgroundColor'] !== '' ? $attributes['backgroundColor'] : null;
         $hoverBackgroundColor = isset($attributes['hoverBackgroundColor']) && is_string($attributes['hoverBackgroundColor']) && $attributes['hoverBackgroundColor'] !== '' ? $attributes['hoverBackgroundColor'] : null;
         $color = isset($attributes['color']) && is_string($attributes['color']) && $attributes['color'] !== '' ? $attributes['color'] : null;
+        $alignment = isset($attributes['alignment']) && is_string($attributes['alignment']) && $attributes['alignment'] !== '' ? $attributes['alignment'] : null;
 
         $this->scriptEnqueuer->markNeeded();
 
@@ -61,7 +62,8 @@ final class BlockRegistrar
             $color,
             function (string $value): string {
                 return esc_attr($value);
-            }
+            },
+            $alignment
         );
     }
 }

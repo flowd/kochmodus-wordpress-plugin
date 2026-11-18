@@ -1,10 +1,12 @@
-import { useBlockProps, InspectorControls } from '@wordpress/block-editor';
+import { useBlockProps, InspectorControls, BlockControls, AlignmentControl } from '@wordpress/block-editor';
 import { PanelBody, TextControl, ColorPicker, BaseControl } from '@wordpress/components';
 import { __ } from '@wordpress/i18n';
 
 export default function Edit({ attributes, setAttributes }) {
-    const { label, recipeUri, backgroundColor, hoverBackgroundColor, color } = attributes;
-    const blockProps = useBlockProps();
+    const { label, recipeUri, backgroundColor, hoverBackgroundColor, color, alignment } = attributes;
+    // Same inline text-align the front end puts on the wrapper (RenderButtonService),
+    // so the preview sits where the button will be rendered.
+    const blockProps = useBlockProps(alignment ? { style: { textAlign: alignment } } : {});
 
     // Global defaults from Settings > Kochmodus, injected via wp_add_inline_script.
     const defaults = window.kochmodusEditorDefaults || {};
@@ -15,6 +17,12 @@ export default function Edit({ attributes, setAttributes }) {
 
     return (
         <>
+            <BlockControls group="block">
+                <AlignmentControl
+                    value={alignment}
+                    onChange={(value) => setAttributes({ alignment: value || '' })}
+                />
+            </BlockControls>
             <InspectorControls>
                 <PanelBody title={__('Button Settings', 'flowd-kochmodus')}>
                     <TextControl

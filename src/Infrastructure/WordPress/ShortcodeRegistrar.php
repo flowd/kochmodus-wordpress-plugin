@@ -52,6 +52,7 @@ final class ShortcodeRegistrar
             'background_color' => '',
             'hover_background_color' => '',
             'color' => '',
+            'align' => '',
         ], $atts, 'kochmodus_button');
 
         $this->scriptEnqueuer->markNeeded();
@@ -65,7 +66,8 @@ final class ShortcodeRegistrar
             $atts['color'] !== '' ? $atts['color'] : null,
             function (string $value): string {
                 return esc_attr($value);
-            }
+            },
+            $atts['align'] !== '' ? $atts['align'] : null
         );
     }
 }
