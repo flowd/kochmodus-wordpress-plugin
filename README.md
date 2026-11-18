@@ -77,6 +77,8 @@ Search for **Kochmodus Button** in the block inserter. The block provides settin
 - **Hover Background Color** - custom button hover background color
 - **Text Color** - custom button text color
 
+The block toolbar has an alignment control (left, center, right). Without a choice the button follows the text alignment of its surroundings.
+
 ### Shortcode
 
 ```
@@ -86,31 +88,35 @@ Search for **Kochmodus Button** in the block inserter. The block provides settin
 With all available attributes:
 
 ```
-[kochmodus_button label="Start Cooking" recipe_uri="https://example.com/recipe/" background_color="#ff0000" hover_background_color="#cc0000" color="#ffffff"]
+[kochmodus_button label="Start Cooking" recipe_uri="https://example.com/recipe/" background_color="#ff0000" hover_background_color="#cc0000" color="#ffffff" align="center"]
 ```
 
-All attributes are optional. When no `recipe_uri` is provided, the widget falls back to the current browser URL.
+All attributes are optional. When no `recipe_uri` is provided, the widget falls back to the current browser URL. `align` takes `left`, `center` or `right`.
 
 ### Output
 
-The plugin renders a `<kochmodus-button>` web component:
+The plugin renders a `<kochmodus-button>` web component inside a block-level wrapper. The wrapper makes the button follow the content column of any theme, since the custom element itself is inline and theme layouts only position block-level children:
 
 ```html
-<kochmodus-button
-    label="Kochmodus starten"
-    data-kochmodus-access-token="YOUR_TOKEN"
-></kochmodus-button>
+<div class="kochmodus-button-wrapper">
+    <kochmodus-button
+        label="Kochmodus starten"
+        data-kochmodus-access-token="YOUR_TOKEN"
+    ></kochmodus-button>
+</div>
 ```
 
-With colors and recipe URI set:
+With alignment, colors and recipe URI set:
 
 ```html
-<kochmodus-button
-    label="Kochmodus starten"
-    data-kochmodus-recipe-uri="https://example.com/recipe/"
-    style="--kochmodus-button-background: #ff0000; --kochmodus-button-hover-background: #cc0000; --kochmodus-button-color: #ffffff"
-    data-kochmodus-access-token="YOUR_TOKEN"
-></kochmodus-button>
+<div class="kochmodus-button-wrapper" style="text-align: center">
+    <kochmodus-button
+        label="Kochmodus starten"
+        data-kochmodus-recipe-uri="https://example.com/recipe/"
+        style="--kochmodus-button-background: #ff0000; --kochmodus-button-hover-background: #cc0000; --kochmodus-button-color: #ffffff"
+        data-kochmodus-access-token="YOUR_TOKEN"
+    ></kochmodus-button>
+</div>
 ```
 
 The widget script (`<script type="module">`) is only loaded on pages where the button is actually used.

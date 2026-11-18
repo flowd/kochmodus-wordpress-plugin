@@ -59,7 +59,8 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
                 null,
                 null,
                 null,
-                Mockery::type('callable')
+                Mockery::type('callable'),
+                null
             )
             ->andReturn('<kochmodus-button></kochmodus-button>');
 
@@ -69,7 +70,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
 
         expect('shortcode_atts')
             ->once()
-            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
+            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '', 'align' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
 
@@ -97,7 +98,8 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
                 null,
                 null,
                 null,
-                Mockery::type('callable')
+                Mockery::type('callable'),
+                null
             )
             ->andReturn('<kochmodus-button></kochmodus-button>');
 
@@ -107,7 +109,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
 
         expect('shortcode_atts')
             ->once()
-            ->andReturn(['label' => 'Jetzt kochen!', 'recipe_uri' => 'https://other.com/rezept/', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
+            ->andReturn(['label' => 'Jetzt kochen!', 'recipe_uri' => 'https://other.com/rezept/', 'background_color' => '', 'hover_background_color' => '', 'color' => '', 'align' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
 
@@ -138,7 +140,8 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
                 '#ff0000',
                 '#cc0000',
                 '#ffffff',
-                Mockery::type('callable')
+                Mockery::type('callable'),
+                null
             )
             ->andReturn('<kochmodus-button></kochmodus-button>');
 
@@ -154,6 +157,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
                 'background_color' => '#ff0000',
                 'hover_background_color' => '#cc0000',
                 'color' => '#ffffff',
+                'align' => '',
             ]);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
@@ -163,6 +167,45 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
             'hover_background_color' => '#cc0000',
             'color' => '#ffffff',
         ]);
+
+        $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
+    }
+
+    public function test_handle_shortcode_passes_align_attribute(): void
+    {
+        $settings = $this->createSettings();
+
+        /** @var SettingsServiceInterface&MockInterface $settingsService */
+        $settingsService = Mockery::mock(SettingsServiceInterface::class);
+        $settingsService->shouldReceive('getSettings')->once()->andReturn($settings);
+
+        /** @var RenderButtonServiceInterface&MockInterface $renderService */
+        $renderService = Mockery::mock(RenderButtonServiceInterface::class);
+        $renderService->shouldReceive('render')
+            ->once()
+            ->with(
+                $settings,
+                null,
+                null,
+                null,
+                null,
+                null,
+                Mockery::type('callable'),
+                'center'
+            )
+            ->andReturn('<kochmodus-button></kochmodus-button>');
+
+        /** @var ScriptEnqueuerInterface&MockInterface $scriptEnqueuer */
+        $scriptEnqueuer = Mockery::mock(ScriptEnqueuerInterface::class);
+        $scriptEnqueuer->shouldReceive('markNeeded')->once();
+
+        expect('shortcode_atts')
+            ->once()
+            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '', 'align' => 'center']);
+
+        $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
+
+        $result = $registrar->handleShortcode(['align' => 'center']);
 
         $this->assertSame('<kochmodus-button></kochmodus-button>', $result);
     }
@@ -184,7 +227,7 @@ final class ShortcodeRegistrarTest extends WordPressTestCase
         $scriptEnqueuer->shouldReceive('markNeeded')->once();
 
         expect('shortcode_atts')
-            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '']);
+            ->andReturn(['label' => '', 'recipe_uri' => '', 'background_color' => '', 'hover_background_color' => '', 'color' => '', 'align' => '']);
 
         $registrar = new ShortcodeRegistrar($settingsService, $renderService, $scriptEnqueuer);
         $registrar->handleShortcode([]);

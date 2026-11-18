@@ -37,6 +37,11 @@
         "color": {
             "type": "string",
             "default": ""
+        },
+        "alignment": {
+            "type": "string",
+            "enum": ["", "left", "center", "right"],
+            "default": ""
         }
     },
     "textdomain": "flowd-kochmodus",
