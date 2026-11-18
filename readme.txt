@@ -3,7 +3,7 @@ Contributors: kochmodus
 Tags: recipe, cooking, widget, gutenberg, shortcode
 Requires at least: 6.0
 Tested up to: 7.1
-Stable tag: 1.0.4
+Stable tag: 1.0.5
 Requires PHP: 7.4
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
@@ -23,6 +23,7 @@ The plugin loads the widget script only on pages where the button is actually us
 * Gutenberg block **Kochmodus Button** with sidebar controls for label, recipe URI and colors
 * `[kochmodus_button]` shortcode for classic editor and page builders
 * Custom button colors (background, hover background, text color)
+* Optional button alignment (left, center, right)
 * Per-button recipe URI override (defaults to the current page URL)
 * Conditional script loading — widget JS is only enqueued when a button is rendered
 * Translation-ready (Text Domain: `flowd-kochmodus`)
@@ -76,9 +77,9 @@ Yes. Use the `[kochmodus_button]` shortcode in the classic editor or any page bu
 
 = Which attributes does the shortcode support? =
 
-`label`, `recipe_uri`, `background_color`, `hover_background_color` and `color`. All attributes are optional. Example:
+`label`, `recipe_uri`, `background_color`, `hover_background_color`, `color` and `align` (`left`, `center` or `right`). All attributes are optional. Example:
 
-`[kochmodus_button label="Start Cooking" recipe_uri="https://example.com/recipe/" background_color="#ff0000" hover_background_color="#cc0000" color="#ffffff"]`
+`[kochmodus_button label="Start Cooking" recipe_uri="https://example.com/recipe/" background_color="#ff0000" hover_background_color="#cc0000" color="#ffffff" align="center"]`
 
 = What happens if I leave the recipe URI empty? =
 
@@ -107,6 +108,11 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 
 == Changelog ==
 
+= 1.0.5 =
+* Fixed the button sitting at the page edge instead of in the content column in themes that only position block-level children.
+* Added an optional alignment (left, center, right) to the block toolbar and as the `align` shortcode attribute.
+* Updated the block build toolchain (@wordpress/scripts 37).
+
 = 1.0.4 =
 * Added an AI transparency notice: the WordPress.org banner and icon images and parts of the readme text were created with the help of generative AI tools. No functional changes.
 
@@ -127,6 +133,9 @@ Yes. Under **Settings > Kochmodus** you can set a default label and default colo
 * Conditional widget script loading in `wp_footer`.
 
 == Upgrade Notice ==
+
+= 1.0.5 =
+Fixes the button position in themes with constrained content layouts and adds an optional alignment setting.
 
 = 1.0.4 =
 Documentation release: added an AI transparency notice. No functional changes.
